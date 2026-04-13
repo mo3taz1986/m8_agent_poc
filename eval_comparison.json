@@ -1,0 +1,156 @@
+{
+  "v4_summary": {
+    "total": 14,
+    "accuracy": 1.0,
+    "supported_accuracy": 1.0,
+    "unsupported_accuracy": 1.0
+  },
+  "v5_summary": {
+    "total": 14,
+    "accuracy": 0.9285714285714286,
+    "supported_accuracy": 0.9,
+    "unsupported_accuracy": 1.0
+  },
+  "comparison": [
+    {
+      "question": "How long should records be kept after account closure?",
+      "expected_answered": true,
+      "v4_answered": true,
+      "v5_answered": false,
+      "v4_correct": true,
+      "v5_correct": false,
+      "improved": false,
+      "regressed": true
+    },
+    {
+      "question": "Are archived records required to stay available for audit?",
+      "expected_answered": true,
+      "v4_answered": true,
+      "v5_answered": true,
+      "v4_correct": true,
+      "v5_correct": true,
+      "improved": false,
+      "regressed": false
+    },
+    {
+      "question": "Can retained records be deleted early?",
+      "expected_answered": true,
+      "v4_answered": true,
+      "v5_answered": true,
+      "v4_correct": true,
+      "v5_correct": true,
+      "improved": false,
+      "regressed": false
+    },
+    {
+      "question": "Who is allowed to access sensitive customer data?",
+      "expected_answered": true,
+      "v4_answered": true,
+      "v5_answered": true,
+      "v4_correct": true,
+      "v5_correct": true,
+      "improved": false,
+      "regressed": false
+    },
+    {
+      "question": "Does access to confidential data need to be logged?",
+      "expected_answered": true,
+      "v4_answered": true,
+      "v5_answered": true,
+      "v4_correct": true,
+      "v5_correct": true,
+      "improved": false,
+      "regressed": false
+    },
+    {
+      "question": "How often should access reviews happen?",
+      "expected_answered": true,
+      "v4_answered": true,
+      "v5_answered": true,
+      "v4_correct": true,
+      "v5_correct": true,
+      "improved": false,
+      "regressed": false
+    },
+    {
+      "question": "How long can temporary access remain active?",
+      "expected_answered": true,
+      "v4_answered": true,
+      "v5_answered": true,
+      "v4_correct": true,
+      "v5_correct": true,
+      "improved": false,
+      "regressed": false
+    },
+    {
+      "question": "What should happen to critical data defects?",
+      "expected_answered": true,
+      "v4_answered": true,
+      "v5_answered": true,
+      "v4_correct": true,
+      "v5_correct": true,
+      "improved": false,
+      "regressed": false
+    },
+    {
+      "question": "What happens to recurring quality issues?",
+      "expected_answered": true,
+      "v4_answered": true,
+      "v5_answered": true,
+      "v4_correct": true,
+      "v5_correct": true,
+      "improved": false,
+      "regressed": false
+    },
+    {
+      "question": "Who should receive escalations for data quality issues?",
+      "expected_answered": true,
+      "v4_answered": true,
+      "v5_answered": true,
+      "v4_correct": true,
+      "v5_correct": true,
+      "improved": false,
+      "regressed": false
+    },
+    {
+      "question": "Who owns customer profitability reporting?",
+      "expected_answered": false,
+      "v4_answered": false,
+      "v5_answered": false,
+      "v4_correct": true,
+      "v5_correct": true,
+      "improved": false,
+      "regressed": false
+    },
+    {
+      "question": "What policy defines credit risk appetite thresholds?",
+      "expected_answered": false,
+      "v4_answered": false,
+      "v5_answered": false,
+      "v4_correct": true,
+      "v5_correct": true,
+      "improved": false,
+      "regressed": false
+    },
+    {
+      "question": "Who approves marketing segmentation changes?",
+      "expected_answered": false,
+      "v4_answered": false,
+      "v5_answered": false,
+      "v4_correct": true,
+      "v5_correct": true,
+      "improved": false,
+      "regressed": false
+    },
+    {
+      "question": "Which team owns customer profitability metrics?",
+      "expected_answered": false,
+      "v4_answered": false,
+      "v5_answered": false,
+      "v4_correct": true,
+      "v5_correct": true,
+      "improved": false,
+      "regressed": false
+    }
+  ]
+}

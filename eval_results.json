@@ -1,0 +1,1187 @@
+{
+  "summary": {
+    "total_cases": 14,
+    "answered_correctly_count": 13,
+    "answered_correctly_rate": 0.9285714285714286,
+    "answer_quality_pass_count": 13,
+    "answer_quality_pass_rate": 0.9285714285714286,
+    "supported_case_count": 10,
+    "supported_answered_correctly_count": 9,
+    "supported_answered_correctly_rate": 0.9,
+    "unsupported_case_count": 4,
+    "unsupported_answered_correctly_count": 4,
+    "unsupported_answered_correctly_rate": 1.0,
+    "top_doc_match_count": 10,
+    "top_doc_match_rate": 1.0
+  },
+  "results": [
+    {
+      "question": "How long should records be kept after account closure?",
+      "notes": "Retention period question",
+      "expected_answered": true,
+      "actual_answered": false,
+      "answered_correctly": false,
+      "expected_doc": "retention_policy.txt",
+      "top_retrieved_doc": "retention_policy.txt",
+      "doc_match": true,
+      "answer": "I do not have enough evidence from the retrieved context.",
+      "keyword_check": {
+        "matched_keywords": [],
+        "matched_count": 0,
+        "total_expected_keywords": 3,
+        "keyword_coverage": 0.0
+      },
+      "answer_quality_pass": false,
+      "grounding": {
+        "grounding_score": 0.1,
+        "grounding_verdict": "downgraded_to_refusal",
+        "grounded": false
+      },
+      "top_chunks": [
+        {
+          "doc_name": "retention_policy.txt",
+          "section_title": "General",
+          "section_id": 0,
+          "chunk_id": 0,
+          "text": "Customer transaction records must be retained for 7 years. Archived records must remain accessible for audit and regulatory review. Deletion of retained records before the retention period ends is prohibited unless required by law.",
+          "semantic_score": 0.6797570586204529,
+          "semantic_score_norm": 1.0,
+          "keyword_score": 1.511928966080356,
+          "keyword_score_norm": 1.0,
+          "hybrid_score": 1.0,
+          "term_coverage_score": 0.2222222222222222,
+          "rerank_score": 0.7666666666666666
+        },
+        {
+          "doc_name": "access_policy.txt",
+          "section_title": "General",
+          "section_id": 0,
+          "chunk_id": 1,
+          "text": "Quarterly reviews must be performed to confirm that access remains appropriate. Temporary access to sensitive data must expire within 24 hours unless renewed and approved.",
+          "semantic_score": 0.5334650278091431,
+          "semantic_score_norm": 0.652210613842833,
+          "keyword_score": 0.1418888397025302,
+          "keyword_score_norm": 0.0,
+          "hybrid_score": 0.3913263683056998,
+          "term_coverage_score": 0.1111111111111111,
+          "rerank_score": 0.30726179114732316
+        },
+        {
+          "doc_name": "quality_policy.txt",
+          "section_title": "General",
+          "section_id": 0,
+          "chunk_id": 0,
+          "text": "Data quality issues must be documented and escalated to the responsible data steward. Critical data defects must be reviewed within one business day. Recurring quality issues must be tracked for root cause analysis and remediation.",
+          "semantic_score": 0.28451335430145264,
+          "semantic_score_norm": 0.06036190389010052,
+          "keyword_score": 0.20852121867991807,
+          "keyword_score_norm": 0.048635348479575985,
+          "hybrid_score": 0.05567128172589071,
+          "term_coverage_score": 0.1111111111111111,
+          "rerank_score": 0.07230323054145682
+        },
+        {
+          "doc_name": "access_policy.txt",
+          "section_title": "General",
+          "section_id": 0,
+          "chunk_id": 0,
+          "text": "Access to sensitive customer data must be restricted to authorized personnel only. All access to confidential and regulated data must be logged. Quarterly reviews must be performed to confirm that access remains appropriate.",
+          "semantic_score": 0.2591230869293213,
+          "semantic_score_norm": 0.0,
+          "keyword_score": 0.21177301156381542,
+          "keyword_score_norm": 0.05100885040940237,
+          "hybrid_score": 0.020403540163760947,
+          "term_coverage_score": 0.1111111111111111,
+          "rerank_score": 0.04761581144796599
+        }
+      ]
+    },
+    {
+      "question": "Are archived records required to stay available for audit?",
+      "notes": "Archived records accessibility",
+      "expected_answered": true,
+      "actual_answered": true,
+      "answered_correctly": true,
+      "expected_doc": "retention_policy.txt",
+      "top_retrieved_doc": "retention_policy.txt",
+      "doc_match": true,
+      "answer": "Yes, archived records are required to remain accessible for audit and regulatory review.\n\n**Evidence:**\n\nThe retention policy explicitly states that \"Archived records must remain accessible for audit and regulatory review\" (retention_policy.txt, Section: General). This requirement is part of the broader customer transaction records retention framework that mandates 7-year retention periods.",
+      "keyword_check": {
+        "matched_keywords": [
+          "accessible",
+          "audit",
+          "regulatory review"
+        ],
+        "matched_count": 3,
+        "total_expected_keywords": 3,
+        "keyword_coverage": 1.0
+      },
+      "answer_quality_pass": true,
+      "grounding": {
+        "grounding_score": 0.8461538461538461,
+        "grounding_verdict": "grounded",
+        "grounded": true
+      },
+      "top_chunks": [
+        {
+          "doc_name": "retention_policy.txt",
+          "section_title": "General",
+          "section_id": 0,
+          "chunk_id": 0,
+          "text": "Customer transaction records must be retained for 7 years. Archived records must remain accessible for audit and regulatory review. Deletion of retained records before the retention period ends is prohibited unless required by law.",
+          "semantic_score": 0.6639245748519897,
+          "semantic_score_norm": 1.0,
+          "keyword_score": 3.8509182950974417,
+          "keyword_score_norm": 1.0,
+          "hybrid_score": 1.0,
+          "term_coverage_score": 0.5555555555555556,
+          "rerank_score": 0.8666666666666666
+        },
+        {
+          "doc_name": "access_policy.txt",
+          "section_title": "General",
+          "section_id": 0,
+          "chunk_id": 1,
+          "text": "Quarterly reviews must be performed to confirm that access remains appropriate. Temporary access to sensitive data must expire within 24 hours unless renewed and approved.",
+          "semantic_score": 0.4861990511417389,
+          "semantic_score_norm": 0.570478970033249,
+          "keyword_score": 0.19675138231011885,
+          "keyword_score_norm": 0.019871828125397062,
+          "hybrid_score": 0.35023611327010823,
+          "term_coverage_score": 0.1111111111111111,
+          "rerank_score": 0.2784986126224091
+        },
+        {
+          "doc_name": "access_policy.txt",
+          "section_title": "General",
+          "section_id": 0,
+          "chunk_id": 0,
+          "text": "Access to sensitive customer data must be restricted to authorized personnel only. All access to confidential and regulated data must be logged. Quarterly reviews must be performed to confirm that access remains appropriate.",
+          "semantic_score": 0.373126745223999,
+          "semantic_score_norm": 0.29720964841525377,
+          "keyword_score": 0.23143523152615794,
+          "keyword_score_norm": 0.029174801562852983,
+          "hybrid_score": 0.18999570967429344,
+          "term_coverage_score": 0.1111111111111111,
+          "rerank_score": 0.16633033010533874
+        },
+        {
+          "doc_name": "quality_policy.txt",
+          "section_title": "General",
+          "section_id": 0,
+          "chunk_id": 0,
+          "text": "Data quality issues must be documented and escalated to the responsible data steward. Critical data defects must be reviewed within one business day. Recurring quality issues must be tracked for root cause analysis and remediation.",
+          "semantic_score": 0.2501485049724579,
+          "semantic_score_norm": 0.0,
+          "keyword_score": 0.12266415686741135,
+          "keyword_score_norm": 0.0,
+          "hybrid_score": 0.0,
+          "term_coverage_score": 0.2222222222222222,
+          "rerank_score": 0.06666666666666667
+        }
+      ]
+    },
+    {
+      "question": "Can retained records be deleted early?",
+      "notes": "Early deletion restriction",
+      "expected_answered": true,
+      "actual_answered": true,
+      "answered_correctly": true,
+      "expected_doc": "retention_policy.txt",
+      "top_retrieved_doc": "retention_policy.txt",
+      "doc_match": true,
+      "answer": "Retained records cannot be deleted early unless required by law.\n\n**Evidence:**\n\nThe retention policy explicitly states: \"Deletion of retained records before the retention period ends is prohibited unless required by law.\" This appears in the retention_policy.txt under the General section, which also specifies that \"Customer transaction records must be retained for 7 years\" and \"Archived records must remain accessible for audit and regulatory review.\"",
+      "keyword_check": {
+        "matched_keywords": [
+          "prohibited",
+          "before the retention period ends",
+          "required by law"
+        ],
+        "matched_count": 3,
+        "total_expected_keywords": 3,
+        "keyword_coverage": 1.0
+      },
+      "answer_quality_pass": true,
+      "grounding": {
+        "grounding_score": 0.7,
+        "grounding_verdict": "grounded",
+        "grounded": true
+      },
+      "top_chunks": [
+        {
+          "doc_name": "retention_policy.txt",
+          "section_title": "General",
+          "section_id": 0,
+          "chunk_id": 0,
+          "text": "Customer transaction records must be retained for 7 years. Archived records must remain accessible for audit and regulatory review. Deletion of retained records before the retention period ends is prohibited unless required by law.",
+          "semantic_score": 0.7427688241004944,
+          "semantic_score_norm": 1.0,
+          "keyword_score": 2.6953969701405693,
+          "keyword_score_norm": 1.0,
+          "hybrid_score": 1.0,
+          "term_coverage_score": 0.5,
+          "rerank_score": 0.85
+        },
+        {
+          "doc_name": "access_policy.txt",
+          "section_title": "General",
+          "section_id": 0,
+          "chunk_id": 1,
+          "text": "Quarterly reviews must be performed to confirm that access remains appropriate. Temporary access to sensitive data must expire within 24 hours unless renewed and approved.",
+          "semantic_score": 0.4930885136127472,
+          "semantic_score_norm": 0.5544774811570892,
+          "keyword_score": 0.1418888397025302,
+          "keyword_score_norm": 0.0,
+          "hybrid_score": 0.3326864886942535,
+          "term_coverage_score": 0.16666666666666666,
+          "rerank_score": 0.2828805420859774
+        },
+        {
+          "doc_name": "access_policy.txt",
+          "section_title": "General",
+          "section_id": 0,
+          "chunk_id": 0,
+          "text": "Access to sensitive customer data must be restricted to authorized personnel only. All access to confidential and regulated data must be logged. Quarterly reviews must be performed to confirm that access remains appropriate.",
+          "semantic_score": 0.2429889291524887,
+          "semantic_score_norm": 0.10820682163799282,
+          "keyword_score": 0.21177301156381542,
+          "keyword_score_norm": 0.027367906539344764,
+          "hybrid_score": 0.0758712555985336,
+          "term_coverage_score": 0.16666666666666666,
+          "rerank_score": 0.10310987891897351
+        },
+        {
+          "doc_name": "quality_policy.txt",
+          "section_title": "General",
+          "section_id": 0,
+          "chunk_id": 0,
+          "text": "Data quality issues must be documented and escalated to the responsible data steward. Critical data defects must be reviewed within one business day. Recurring quality issues must be tracked for root cause analysis and remediation.",
+          "semantic_score": 0.18234752118587494,
+          "semantic_score_norm": 0.0,
+          "keyword_score": 0.20852121867991807,
+          "keyword_score_norm": 0.026094445591585996,
+          "hybrid_score": 0.0104377782366344,
+          "term_coverage_score": 0.16666666666666666,
+          "rerank_score": 0.057306444765644074
+        }
+      ]
+    },
+    {
+      "question": "Who is allowed to access sensitive customer data?",
+      "notes": "Access control",
+      "expected_answered": true,
+      "actual_answered": true,
+      "answered_correctly": true,
+      "expected_doc": "access_policy.txt",
+      "top_retrieved_doc": "access_policy.txt",
+      "doc_match": true,
+      "answer": "Sensitive customer data access is restricted to authorized personnel only.\n\n**Evidence:**\nThe access policy states that \"Access to sensitive customer data must be restricted to authorized personnel only\" (access_policy.txt, Section: General). However, the retrieved context does not specify who qualifies as \"authorized personnel\" or provide criteria for authorization.\n\nI do not have enough evidence from the retrieved context to identify the specific roles, departments, or individuals who are considered authorized personnel for accessing sensitive customer data.",
+      "keyword_check": {
+        "matched_keywords": [
+          "authorized personnel",
+          "restricted"
+        ],
+        "matched_count": 2,
+        "total_expected_keywords": 2,
+        "keyword_coverage": 1.0
+      },
+      "answer_quality_pass": true,
+      "grounding": {
+        "grounding_score": 1.0,
+        "grounding_verdict": "grounded",
+        "grounded": true
+      },
+      "top_chunks": [
+        {
+          "doc_name": "access_policy.txt",
+          "section_title": "General",
+          "section_id": 0,
+          "chunk_id": 0,
+          "text": "Access to sensitive customer data must be restricted to authorized personnel only. All access to confidential and regulated data must be logged. Quarterly reviews must be performed to confirm that access remains appropriate.",
+          "semantic_score": 0.7535924911499023,
+          "semantic_score_norm": 1.0,
+          "keyword_score": 0.4124508742902301,
+          "keyword_score_norm": 0.16587253533068108,
+          "hybrid_score": 0.6663490141322724,
+          "term_coverage_score": 0.625,
+          "rerank_score": 0.6539443098925907
+        },
+        {
+          "doc_name": "retention_policy.txt",
+          "section_title": "General",
+          "section_id": 0,
+          "chunk_id": 0,
+          "text": "Customer transaction records must be retained for 7 years. Archived records must remain accessible for audit and regulatory review. Deletion of retained records before the retention period ends is prohibited unless required by law.",
+          "semantic_score": 0.2758522629737854,
+          "semantic_score_norm": 0.0,
+          "keyword_score": 0.8211127681737878,
+          "keyword_score_norm": 1.0,
+          "hybrid_score": 0.4,
+          "term_coverage_score": 0.25,
+          "rerank_score": 0.355
+        },
+        {
+          "doc_name": "access_policy.txt",
+          "section_title": "General",
+          "section_id": 0,
+          "chunk_id": 1,
+          "text": "Quarterly reviews must be performed to confirm that access remains appropriate. Temporary access to sensitive data must expire within 24 hours unless renewed and approved.",
+          "semantic_score": 0.4149243235588074,
+          "semantic_score_norm": 0.29110393553409036,
+          "keyword_score": 0.33864022201264904,
+          "keyword_score_norm": 0.015216227093069535,
+          "hybrid_score": 0.18074885215768202,
+          "term_coverage_score": 0.5,
+          "rerank_score": 0.2765241965103774
+        },
+        {
+          "doc_name": "quality_policy.txt",
+          "section_title": "General",
+          "section_id": 0,
+          "chunk_id": 0,
+          "text": "Data quality issues must be documented and escalated to the responsible data steward. Critical data defects must be reviewed within one business day. Recurring quality issues must be tracked for root cause analysis and remediation.",
+          "semantic_score": 0.3260967433452606,
+          "semantic_score_norm": 0.10517113152328633,
+          "keyword_score": 0.3311853755473294,
+          "keyword_score_norm": 0.0,
+          "hybrid_score": 0.0631026789139718,
+          "term_coverage_score": 0.25,
+          "rerank_score": 0.11917187523978026
+        }
+      ]
+    },
+    {
+      "question": "Does access to confidential data need to be logged?",
+      "notes": "Logging requirement",
+      "expected_answered": true,
+      "actual_answered": true,
+      "answered_correctly": true,
+      "expected_doc": "access_policy.txt",
+      "top_retrieved_doc": "access_policy.txt",
+      "doc_match": true,
+      "answer": "Yes, access to confidential data must be logged according to the policy.\n\n**Evidence:**\n\nThe access policy explicitly states: \"All access to confidential and regulated data must be logged.\"\n\n*Source: access_policy.txt, Section: General*",
+      "keyword_check": {
+        "matched_keywords": [
+          "logged",
+          "confidential",
+          "regulated data"
+        ],
+        "matched_count": 3,
+        "total_expected_keywords": 3,
+        "keyword_coverage": 1.0
+      },
+      "answer_quality_pass": true,
+      "grounding": {
+        "grounding_score": 0.7272727272727273,
+        "grounding_verdict": "grounded",
+        "grounded": true
+      },
+      "top_chunks": [
+        {
+          "doc_name": "access_policy.txt",
+          "section_title": "General",
+          "section_id": 0,
+          "chunk_id": 0,
+          "text": "Access to sensitive customer data must be restricted to authorized personnel only. All access to confidential and regulated data must be logged. Quarterly reviews must be performed to confirm that access remains appropriate.",
+          "semantic_score": 0.6528909206390381,
+          "semantic_score_norm": 1.0,
+          "keyword_score": 2.5207551060714977,
+          "keyword_score_norm": 1.0,
+          "hybrid_score": 1.0,
+          "term_coverage_score": 0.75,
+          "rerank_score": 0.9249999999999999
+        },
+        {
+          "doc_name": "access_policy.txt",
+          "section_title": "General",
+          "section_id": 0,
+          "chunk_id": 1,
+          "text": "Quarterly reviews must be performed to confirm that access remains appropriate. Temporary access to sensitive data must expire within 24 hours unless renewed and approved.",
+          "semantic_score": 0.38815736770629883,
+          "semantic_score_norm": 0.4457127444647223,
+          "keyword_score": 0.6772804440252981,
+          "keyword_score_norm": 0.23073362293149519,
+          "hybrid_score": 0.35972109585143147,
+          "term_coverage_score": 0.5,
+          "rerank_score": 0.401804767096002
+        },
+        {
+          "doc_name": "quality_policy.txt",
+          "section_title": "General",
+          "section_id": 0,
+          "chunk_id": 0,
+          "text": "Data quality issues must be documented and escalated to the responsible data steward. Critical data defects must be reviewed within one business day. Recurring quality issues must be tracked for root cause analysis and remediation.",
+          "semantic_score": 0.17528016865253448,
+          "semantic_score_norm": 0.0,
+          "keyword_score": 0.6623707510946588,
+          "keyword_score_norm": 0.22451193423672033,
+          "hybrid_score": 0.08980477369468814,
+          "term_coverage_score": 0.375,
+          "rerank_score": 0.1753633415862817
+        },
+        {
+          "doc_name": "retention_policy.txt",
+          "section_title": "General",
+          "section_id": 0,
+          "chunk_id": 0,
+          "text": "Customer transaction records must be retained for 7 years. Archived records must remain accessible for audit and regulatory review. Deletion of retained records before the retention period ends is prohibited unless required by law.",
+          "semantic_score": 0.20783336460590363,
+          "semantic_score_norm": 0.0681584236074506,
+          "keyword_score": 0.12434897550427773,
+          "keyword_score_norm": 0.0,
+          "hybrid_score": 0.04089505416447036,
+          "term_coverage_score": 0.125,
+          "rerank_score": 0.06612653791512925
+        }
+      ]
+    },
+    {
+      "question": "How often should access reviews happen?",
+      "notes": "Periodic review",
+      "expected_answered": true,
+      "actual_answered": true,
+      "answered_correctly": true,
+      "expected_doc": "access_policy.txt",
+      "top_retrieved_doc": "access_policy.txt",
+      "doc_match": true,
+      "answer": "Quarterly reviews should be performed to confirm that access remains appropriate.\n\n**Evidence:**\nThe retrieved context clearly states the frequency requirement: \"Quarterly reviews must be performed to confirm that access remains appropriate.\" This requirement appears in the access_policy.txt General section and applies to access to sensitive data.",
+      "keyword_check": {
+        "matched_keywords": [
+          "quarterly reviews",
+          "appropriate"
+        ],
+        "matched_count": 2,
+        "total_expected_keywords": 2,
+        "keyword_coverage": 1.0
+      },
+      "answer_quality_pass": true,
+      "grounding": {
+        "grounding_score": 0.9090909090909091,
+        "grounding_verdict": "grounded",
+        "grounded": true
+      },
+      "top_chunks": [
+        {
+          "doc_name": "access_policy.txt",
+          "section_title": "General",
+          "section_id": 0,
+          "chunk_id": 1,
+          "text": "Quarterly reviews must be performed to confirm that access remains appropriate. Temporary access to sensitive data must expire within 24 hours unless renewed and approved.",
+          "semantic_score": 0.5422482490539551,
+          "semantic_score_norm": 1.0,
+          "keyword_score": 0.0,
+          "keyword_score_norm": 1.0,
+          "hybrid_score": 1.0,
+          "term_coverage_score": 0.3333333333333333,
+          "rerank_score": 0.7999999999999999
+        },
+        {
+          "doc_name": "access_policy.txt",
+          "section_title": "General",
+          "section_id": 0,
+          "chunk_id": 0,
+          "text": "Access to sensitive customer data must be restricted to authorized personnel only. All access to confidential and regulated data must be logged. Quarterly reviews must be performed to confirm that access remains appropriate.",
+          "semantic_score": 0.35709837079048157,
+          "semantic_score_norm": 0.3298530834842511,
+          "keyword_score": 0.0,
+          "keyword_score_norm": 1.0,
+          "hybrid_score": 0.5979118500905507,
+          "term_coverage_score": 0.3333333333333333,
+          "rerank_score": 0.5185382950633854
+        },
+        {
+          "doc_name": "quality_policy.txt",
+          "section_title": "General",
+          "section_id": 0,
+          "chunk_id": 0,
+          "text": "Data quality issues must be documented and escalated to the responsible data steward. Critical data defects must be reviewed within one business day. Recurring quality issues must be tracked for root cause analysis and remediation.",
+          "semantic_score": 0.3069959878921509,
+          "semantic_score_norm": 0.14850833876004355,
+          "keyword_score": 0.0,
+          "keyword_score_norm": 1.0,
+          "hybrid_score": 0.4891050032560261,
+          "term_coverage_score": 0.0,
+          "rerank_score": 0.34237350227921826
+        },
+        {
+          "doc_name": "retention_policy.txt",
+          "section_title": "General",
+          "section_id": 0,
+          "chunk_id": 0,
+          "text": "Customer transaction records must be retained for 7 years. Archived records must remain accessible for audit and regulatory review. Deletion of retained records before the retention period ends is prohibited unless required by law.",
+          "semantic_score": 0.2659657299518585,
+          "semantic_score_norm": 0.0,
+          "keyword_score": 0.0,
+          "keyword_score_norm": 1.0,
+          "hybrid_score": 0.4,
+          "term_coverage_score": 0.0,
+          "rerank_score": 0.27999999999999997
+        }
+      ]
+    },
+    {
+      "question": "How long can temporary access remain active?",
+      "notes": "Temporary access duration",
+      "expected_answered": true,
+      "actual_answered": true,
+      "answered_correctly": true,
+      "expected_doc": "access_policy.txt",
+      "top_retrieved_doc": "access_policy.txt",
+      "doc_match": true,
+      "answer": "Temporary access to sensitive data can remain active for up to 24 hours unless renewed and approved.\n\n**Evidence:**\nThe access policy clearly states: \"Temporary access to sensitive data must expire within 24 hours unless renewed and approved.\"\n\nSource: access_policy.txt, Section: General",
+      "keyword_check": {
+        "matched_keywords": [
+          "24 hours",
+          "renewed",
+          "approved"
+        ],
+        "matched_count": 3,
+        "total_expected_keywords": 3,
+        "keyword_coverage": 1.0
+      },
+      "answer_quality_pass": true,
+      "grounding": {
+        "grounding_score": 0.8125,
+        "grounding_verdict": "grounded",
+        "grounded": true
+      },
+      "top_chunks": [
+        {
+          "doc_name": "access_policy.txt",
+          "section_title": "General",
+          "section_id": 0,
+          "chunk_id": 1,
+          "text": "Quarterly reviews must be performed to confirm that access remains appropriate. Temporary access to sensitive data must expire within 24 hours unless renewed and approved.",
+          "semantic_score": 0.652871310710907,
+          "semantic_score_norm": 1.0,
+          "keyword_score": 0.9369336375200248,
+          "keyword_score_norm": 1.0,
+          "hybrid_score": 1.0,
+          "term_coverage_score": 0.2857142857142857,
+          "rerank_score": 0.7857142857142857
+        },
+        {
+          "doc_name": "retention_policy.txt",
+          "section_title": "General",
+          "section_id": 0,
+          "chunk_id": 0,
+          "text": "Customer transaction records must be retained for 7 years. Archived records must remain accessible for audit and regulatory review. Deletion of retained records before the retention period ends is prohibited unless required by law.",
+          "semantic_score": 0.36805272102355957,
+          "semantic_score_norm": 0.4900544235186565,
+          "keyword_score": 0.8211127681737878,
+          "keyword_score_norm": 0.8763830599008016,
+          "hybrid_score": 0.6445858780715146,
+          "term_coverage_score": 0.14285714285714285,
+          "rerank_score": 0.49406725750720304
+        },
+        {
+          "doc_name": "access_policy.txt",
+          "section_title": "General",
+          "section_id": 0,
+          "chunk_id": 0,
+          "text": "Access to sensitive customer data must be restricted to authorized personnel only. All access to confidential and regulated data must be logged. Quarterly reviews must be performed to confirm that access remains appropriate.",
+          "semantic_score": 0.30174684524536133,
+          "semantic_score_norm": 0.37133889977096024,
+          "keyword_score": 0.0,
+          "keyword_score_norm": 0.0,
+          "hybrid_score": 0.22280333986257614,
+          "term_coverage_score": 0.14285714285714285,
+          "rerank_score": 0.19881948076094613
+        },
+        {
+          "doc_name": "quality_policy.txt",
+          "section_title": "General",
+          "section_id": 0,
+          "chunk_id": 0,
+          "text": "Data quality issues must be documented and escalated to the responsible data steward. Critical data defects must be reviewed within one business day. Recurring quality issues must be tracked for root cause analysis and remediation.",
+          "semantic_score": 0.0943438857793808,
+          "semantic_score_norm": 0.0,
+          "keyword_score": 0.0,
+          "keyword_score_norm": 0.0,
+          "hybrid_score": 0.0,
+          "term_coverage_score": 0.0,
+          "rerank_score": 0.0
+        }
+      ]
+    },
+    {
+      "question": "What should happen to critical data defects?",
+      "notes": "Critical defect handling",
+      "expected_answered": true,
+      "actual_answered": true,
+      "answered_correctly": true,
+      "expected_doc": "quality_policy.txt",
+      "top_retrieved_doc": "quality_policy.txt",
+      "doc_match": true,
+      "answer": "Critical data defects must be reviewed within one business day.\n\n**Evidence:**\nThe quality policy specifies that \"Critical data defects must be reviewed within one business day.\" Additionally, the policy states that \"Data quality issues must be documented and escalated to the responsible data steward.\"\n\n*Source: quality_policy.txt, Section: General*",
+      "keyword_check": {
+        "matched_keywords": [
+          "reviewed",
+          "one business day",
+          "critical data defects"
+        ],
+        "matched_count": 3,
+        "total_expected_keywords": 3,
+        "keyword_coverage": 1.0
+      },
+      "answer_quality_pass": true,
+      "grounding": {
+        "grounding_score": 1.0,
+        "grounding_verdict": "grounded",
+        "grounded": true
+      },
+      "top_chunks": [
+        {
+          "doc_name": "quality_policy.txt",
+          "section_title": "General",
+          "section_id": 0,
+          "chunk_id": 0,
+          "text": "Data quality issues must be documented and escalated to the responsible data steward. Critical data defects must be reviewed within one business day. Recurring quality issues must be tracked for root cause analysis and remediation.",
+          "semantic_score": 0.7601487636566162,
+          "semantic_score_norm": 1.0,
+          "keyword_score": 1.9511602083538764,
+          "keyword_score_norm": 1.0,
+          "hybrid_score": 1.0,
+          "term_coverage_score": 0.5714285714285714,
+          "rerank_score": 0.8714285714285713
+        },
+        {
+          "doc_name": "access_policy.txt",
+          "section_title": "General",
+          "section_id": 0,
+          "chunk_id": 0,
+          "text": "Access to sensitive customer data must be restricted to authorized personnel only. All access to confidential and regulated data must be logged. Quarterly reviews must be performed to confirm that access remains appropriate.",
+          "semantic_score": 0.3209446966648102,
+          "semantic_score_norm": 0.17850077721174093,
+          "keyword_score": 0.4124508742902301,
+          "keyword_score_norm": 0.21138749782018157,
+          "hybrid_score": 0.1916554654551172,
+          "term_coverage_score": 0.2857142857142857,
+          "rerank_score": 0.2198731115328677
+        },
+        {
+          "doc_name": "access_policy.txt",
+          "section_title": "General",
+          "section_id": 0,
+          "chunk_id": 1,
+          "text": "Quarterly reviews must be performed to confirm that access remains appropriate. Temporary access to sensitive data must expire within 24 hours unless renewed and approved.",
+          "semantic_score": 0.32467854022979736,
+          "semantic_score_norm": 0.1854846596872808,
+          "keyword_score": 0.33864022201264904,
+          "keyword_score_norm": 0.17355838877953933,
+          "hybrid_score": 0.18071415132418422,
+          "term_coverage_score": 0.2857142857142857,
+          "rerank_score": 0.21221419164121463
+        },
+        {
+          "doc_name": "retention_policy.txt",
+          "section_title": "General",
+          "section_id": 0,
+          "chunk_id": 0,
+          "text": "Customer transaction records must be retained for 7 years. Archived records must remain accessible for audit and regulatory review. Deletion of retained records before the retention period ends is prohibited unless required by law.",
+          "semantic_score": 0.22551153600215912,
+          "semantic_score_norm": 0.0,
+          "keyword_score": 0.0,
+          "keyword_score_norm": 0.0,
+          "hybrid_score": 0.0,
+          "term_coverage_score": 0.0,
+          "rerank_score": 0.0
+        }
+      ]
+    },
+    {
+      "question": "What happens to recurring quality issues?",
+      "notes": "Recurring issue treatment",
+      "expected_answered": true,
+      "actual_answered": true,
+      "answered_correctly": true,
+      "expected_doc": "quality_policy.txt",
+      "top_retrieved_doc": "quality_policy.txt",
+      "doc_match": true,
+      "answer": "Recurring quality issues must be tracked for root cause analysis and remediation.\n\n**Evidence:**\nThe policy explicitly states that \"Recurring quality issues must be tracked for root cause analysis and remediation\" (quality_policy.txt, General section).",
+      "keyword_check": {
+        "matched_keywords": [
+          "tracked",
+          "root cause analysis",
+          "remediation"
+        ],
+        "matched_count": 3,
+        "total_expected_keywords": 3,
+        "keyword_coverage": 1.0
+      },
+      "answer_quality_pass": true,
+      "grounding": {
+        "grounding_score": 1.0,
+        "grounding_verdict": "grounded",
+        "grounded": true
+      },
+      "top_chunks": [
+        {
+          "doc_name": "quality_policy.txt",
+          "section_title": "General",
+          "section_id": 0,
+          "chunk_id": 0,
+          "text": "Data quality issues must be documented and escalated to the responsible data steward. Critical data defects must be reviewed within one business day. Recurring quality issues must be tracked for root cause analysis and remediation.",
+          "semantic_score": 0.6132746934890747,
+          "semantic_score_norm": 1.0,
+          "keyword_score": 3.27638864420289,
+          "keyword_score_norm": 1.0,
+          "hybrid_score": 1.0,
+          "term_coverage_score": 0.6666666666666666,
+          "rerank_score": 0.8999999999999999
+        },
+        {
+          "doc_name": "access_policy.txt",
+          "section_title": "General",
+          "section_id": 0,
+          "chunk_id": 1,
+          "text": "Quarterly reviews must be performed to confirm that access remains appropriate. Temporary access to sensitive data must expire within 24 hours unless renewed and approved.",
+          "semantic_score": 0.3000827729701996,
+          "semantic_score_norm": 0.30258465321196504,
+          "keyword_score": 0.19675138231011885,
+          "keyword_score_norm": 0.06005129539752337,
+          "hybrid_score": 0.20557131008618837,
+          "term_coverage_score": 0.16666666666666666,
+          "rerank_score": 0.19389991706033183
+        },
+        {
+          "doc_name": "retention_policy.txt",
+          "section_title": "General",
+          "section_id": 0,
+          "chunk_id": 0,
+          "text": "Customer transaction records must be retained for 7 years. Archived records must remain accessible for audit and regulatory review. Deletion of retained records before the retention period ends is prohibited unless required by law.",
+          "semantic_score": 0.29807883501052856,
+          "semantic_score_norm": 0.29812228686237896,
+          "keyword_score": 0.0,
+          "keyword_score_norm": 0.0,
+          "hybrid_score": 0.17887337211742738,
+          "term_coverage_score": 0.0,
+          "rerank_score": 0.12521136048219916
+        },
+        {
+          "doc_name": "access_policy.txt",
+          "section_title": "General",
+          "section_id": 0,
+          "chunk_id": 0,
+          "text": "Access to sensitive customer data must be restricted to authorized personnel only. All access to confidential and regulated data must be logged. Quarterly reviews must be performed to confirm that access remains appropriate.",
+          "semantic_score": 0.16419951617717743,
+          "semantic_score_norm": 0.0,
+          "keyword_score": 0.23143523152615794,
+          "keyword_score_norm": 0.0706372951010101,
+          "hybrid_score": 0.028254918040404045,
+          "term_coverage_score": 0.16666666666666666,
+          "rerank_score": 0.06977844262828282
+        }
+      ]
+    },
+    {
+      "question": "Who should receive escalations for data quality issues?",
+      "notes": "Escalation target",
+      "expected_answered": true,
+      "actual_answered": true,
+      "answered_correctly": true,
+      "expected_doc": "quality_policy.txt",
+      "top_retrieved_doc": "quality_policy.txt",
+      "doc_match": true,
+      "answer": "Data quality issues should be escalated to the responsible data steward.\n\n**Evidence:**\nThe quality_policy.txt document in the General section states: \"Data quality issues must be documented and escalated to the responsible data steward.\"",
+      "keyword_check": {
+        "matched_keywords": [
+          "responsible data steward",
+          "documented",
+          "escalated"
+        ],
+        "matched_count": 3,
+        "total_expected_keywords": 3,
+        "keyword_coverage": 1.0
+      },
+      "answer_quality_pass": true,
+      "grounding": {
+        "grounding_score": 0.9,
+        "grounding_verdict": "grounded",
+        "grounded": true
+      },
+      "top_chunks": [
+        {
+          "doc_name": "quality_policy.txt",
+          "section_title": "General",
+          "section_id": 0,
+          "chunk_id": 0,
+          "text": "Data quality issues must be documented and escalated to the responsible data steward. Critical data defects must be reviewed within one business day. Recurring quality issues must be tracked for root cause analysis and remediation.",
+          "semantic_score": 0.73944091796875,
+          "semantic_score_norm": 1.0,
+          "keyword_score": 2.5522582896121238,
+          "keyword_score_norm": 1.0,
+          "hybrid_score": 1.0,
+          "term_coverage_score": 0.5,
+          "rerank_score": 0.85
+        },
+        {
+          "doc_name": "access_policy.txt",
+          "section_title": "General",
+          "section_id": 0,
+          "chunk_id": 0,
+          "text": "Access to sensitive customer data must be restricted to authorized personnel only. All access to confidential and regulated data must be logged. Quarterly reviews must be performed to confirm that access remains appropriate.",
+          "semantic_score": 0.4292513132095337,
+          "semantic_score_norm": 0.43708418599651566,
+          "keyword_score": 0.18101564276407217,
+          "keyword_score_norm": 0.0709237162636787,
+          "hybrid_score": 0.2906199981033809,
+          "term_coverage_score": 0.125,
+          "rerank_score": 0.24093399867236662
+        },
+        {
+          "doc_name": "access_policy.txt",
+          "section_title": "General",
+          "section_id": 0,
+          "chunk_id": 1,
+          "text": "Quarterly reviews must be performed to confirm that access remains appropriate. Temporary access to sensitive data must expire within 24 hours unless renewed and approved.",
+          "semantic_score": 0.3220498561859131,
+          "semantic_score_norm": 0.24254060840095484,
+          "keyword_score": 0.1418888397025302,
+          "keyword_score_norm": 0.055593448468765114,
+          "hybrid_score": 0.16776174442807895,
+          "term_coverage_score": 0.125,
+          "rerank_score": 0.15493322109965527
+        },
+        {
+          "doc_name": "retention_policy.txt",
+          "section_title": "General",
+          "section_id": 0,
+          "chunk_id": 0,
+          "text": "Customer transaction records must be retained for 7 years. Archived records must remain accessible for audit and regulatory review. Deletion of retained records before the retention period ends is prohibited unless required by law.",
+          "semantic_score": 0.18840007483959198,
+          "semantic_score_norm": 0.0,
+          "keyword_score": 0.0,
+          "keyword_score_norm": 0.0,
+          "hybrid_score": 0.0,
+          "term_coverage_score": 0.125,
+          "rerank_score": 0.0375
+        }
+      ]
+    },
+    {
+      "question": "Who owns customer profitability reporting?",
+      "notes": "Unsupported ownership question",
+      "expected_answered": false,
+      "actual_answered": false,
+      "answered_correctly": true,
+      "expected_doc": null,
+      "top_retrieved_doc": "access_policy.txt",
+      "doc_match": null,
+      "answer": "I do not have enough evidence from the retrieved context.",
+      "keyword_check": {
+        "matched_keywords": [],
+        "matched_count": 0,
+        "total_expected_keywords": 0,
+        "keyword_coverage": null
+      },
+      "answer_quality_pass": true,
+      "grounding": {
+        "grounding_score": 0.1,
+        "grounding_verdict": "downgraded_to_refusal",
+        "grounded": false
+      },
+      "top_chunks": [
+        {
+          "doc_name": "access_policy.txt",
+          "section_title": "General",
+          "section_id": 0,
+          "chunk_id": 0,
+          "text": "Access to sensitive customer data must be restricted to authorized personnel only. All access to confidential and regulated data must be logged. Quarterly reviews must be performed to confirm that access remains appropriate.",
+          "semantic_score": 0.3040875792503357,
+          "semantic_score_norm": 1.0,
+          "keyword_score": 0.0,
+          "keyword_score_norm": 1.0,
+          "hybrid_score": 1.0,
+          "term_coverage_score": 0.2,
+          "rerank_score": 0.76
+        },
+        {
+          "doc_name": "quality_policy.txt",
+          "section_title": "General",
+          "section_id": 0,
+          "chunk_id": 0,
+          "text": "Data quality issues must be documented and escalated to the responsible data steward. Critical data defects must be reviewed within one business day. Recurring quality issues must be tracked for root cause analysis and remediation.",
+          "semantic_score": 0.265981525182724,
+          "semantic_score_norm": 0.7569627485704804,
+          "keyword_score": 0.0,
+          "keyword_score_norm": 1.0,
+          "hybrid_score": 0.8541776491422882,
+          "term_coverage_score": 0.0,
+          "rerank_score": 0.5979243543996017
+        },
+        {
+          "doc_name": "retention_policy.txt",
+          "section_title": "General",
+          "section_id": 0,
+          "chunk_id": 0,
+          "text": "Customer transaction records must be retained for 7 years. Archived records must remain accessible for audit and regulatory review. Deletion of retained records before the retention period ends is prohibited unless required by law.",
+          "semantic_score": 0.20629987120628357,
+          "semantic_score_norm": 0.37631811091091805,
+          "keyword_score": 0.0,
+          "keyword_score_norm": 1.0,
+          "hybrid_score": 0.6257908665465508,
+          "term_coverage_score": 0.2,
+          "rerank_score": 0.4980536065825855
+        },
+        {
+          "doc_name": "access_policy.txt",
+          "section_title": "General",
+          "section_id": 0,
+          "chunk_id": 1,
+          "text": "Quarterly reviews must be performed to confirm that access remains appropriate. Temporary access to sensitive data must expire within 24 hours unless renewed and approved.",
+          "semantic_score": 0.14729657769203186,
+          "semantic_score_norm": 0.0,
+          "keyword_score": 0.0,
+          "keyword_score_norm": 1.0,
+          "hybrid_score": 0.4,
+          "term_coverage_score": 0.0,
+          "rerank_score": 0.27999999999999997
+        }
+      ]
+    },
+    {
+      "question": "What policy defines credit risk appetite thresholds?",
+      "notes": "Unsupported policy question",
+      "expected_answered": false,
+      "actual_answered": false,
+      "answered_correctly": true,
+      "expected_doc": null,
+      "top_retrieved_doc": "access_policy.txt",
+      "doc_match": null,
+      "answer": "I do not have enough evidence from the retrieved context.",
+      "keyword_check": {
+        "matched_keywords": [],
+        "matched_count": 0,
+        "total_expected_keywords": 0,
+        "keyword_coverage": null
+      },
+      "answer_quality_pass": true,
+      "grounding": {
+        "grounding_score": 0.1,
+        "grounding_verdict": "downgraded_to_refusal",
+        "grounded": false
+      },
+      "top_chunks": [
+        {
+          "doc_name": "access_policy.txt",
+          "section_title": "General",
+          "section_id": 0,
+          "chunk_id": 0,
+          "text": "Access to sensitive customer data must be restricted to authorized personnel only. All access to confidential and regulated data must be logged. Quarterly reviews must be performed to confirm that access remains appropriate.",
+          "semantic_score": 0.22432467341423035,
+          "semantic_score_norm": 1.0,
+          "keyword_score": 0.0,
+          "keyword_score_norm": 1.0,
+          "hybrid_score": 1.0,
+          "term_coverage_score": 0.0,
+          "rerank_score": 0.7
+        },
+        {
+          "doc_name": "access_policy.txt",
+          "section_title": "General",
+          "section_id": 0,
+          "chunk_id": 1,
+          "text": "Quarterly reviews must be performed to confirm that access remains appropriate. Temporary access to sensitive data must expire within 24 hours unless renewed and approved.",
+          "semantic_score": 0.14292822778224945,
+          "semantic_score_norm": 0.45899854341042023,
+          "keyword_score": 0.0,
+          "keyword_score_norm": 1.0,
+          "hybrid_score": 0.6753991260462522,
+          "term_coverage_score": 0.0,
+          "rerank_score": 0.4727793882323765
+        },
+        {
+          "doc_name": "quality_policy.txt",
+          "section_title": "General",
+          "section_id": 0,
+          "chunk_id": 0,
+          "text": "Data quality issues must be documented and escalated to the responsible data steward. Critical data defects must be reviewed within one business day. Recurring quality issues must be tracked for root cause analysis and remediation.",
+          "semantic_score": 0.1107134073972702,
+          "semantic_score_norm": 0.24488274736148508,
+          "keyword_score": 0.0,
+          "keyword_score_norm": 1.0,
+          "hybrid_score": 0.5469296484168911,
+          "term_coverage_score": 0.0,
+          "rerank_score": 0.3828507538918237
+        },
+        {
+          "doc_name": "retention_policy.txt",
+          "section_title": "General",
+          "section_id": 0,
+          "chunk_id": 0,
+          "text": "Customer transaction records must be retained for 7 years. Archived records must remain accessible for audit and regulatory review. Deletion of retained records before the retention period ends is prohibited unless required by law.",
+          "semantic_score": 0.07386954128742218,
+          "semantic_score_norm": 0.0,
+          "keyword_score": 0.0,
+          "keyword_score_norm": 1.0,
+          "hybrid_score": 0.4,
+          "term_coverage_score": 0.0,
+          "rerank_score": 0.27999999999999997
+        }
+      ]
+    },
+    {
+      "question": "Who approves marketing segmentation changes?",
+      "notes": "Unsupported approval question",
+      "expected_answered": false,
+      "actual_answered": false,
+      "answered_correctly": true,
+      "expected_doc": null,
+      "top_retrieved_doc": "access_policy.txt",
+      "doc_match": null,
+      "answer": "I do not have enough evidence from the retrieved context.",
+      "keyword_check": {
+        "matched_keywords": [],
+        "matched_count": 0,
+        "total_expected_keywords": 0,
+        "keyword_coverage": null
+      },
+      "answer_quality_pass": true,
+      "grounding": {
+        "grounding_score": 0.1,
+        "grounding_verdict": "downgraded_to_refusal",
+        "grounded": false
+      },
+      "top_chunks": [
+        {
+          "doc_name": "access_policy.txt",
+          "section_title": "General",
+          "section_id": 0,
+          "chunk_id": 0,
+          "text": "Access to sensitive customer data must be restricted to authorized personnel only. All access to confidential and regulated data must be logged. Quarterly reviews must be performed to confirm that access remains appropriate.",
+          "semantic_score": 0.2742253243923187,
+          "semantic_score_norm": 1.0,
+          "keyword_score": 0.0,
+          "keyword_score_norm": 1.0,
+          "hybrid_score": 1.0,
+          "term_coverage_score": 0.0,
+          "rerank_score": 0.7
+        },
+        {
+          "doc_name": "quality_policy.txt",
+          "section_title": "General",
+          "section_id": 0,
+          "chunk_id": 0,
+          "text": "Data quality issues must be documented and escalated to the responsible data steward. Critical data defects must be reviewed within one business day. Recurring quality issues must be tracked for root cause analysis and remediation.",
+          "semantic_score": 0.22706645727157593,
+          "semantic_score_norm": 0.8083648292035429,
+          "keyword_score": 0.0,
+          "keyword_score_norm": 1.0,
+          "hybrid_score": 0.8850188975221258,
+          "term_coverage_score": 0.0,
+          "rerank_score": 0.619513228265488
+        },
+        {
+          "doc_name": "access_policy.txt",
+          "section_title": "General",
+          "section_id": 0,
+          "chunk_id": 1,
+          "text": "Quarterly reviews must be performed to confirm that access remains appropriate. Temporary access to sensitive data must expire within 24 hours unless renewed and approved.",
+          "semantic_score": 0.12189207971096039,
+          "semantic_score_norm": 0.3809773401098022,
+          "keyword_score": 0.0,
+          "keyword_score_norm": 1.0,
+          "hybrid_score": 0.6285864040658813,
+          "term_coverage_score": 0.0,
+          "rerank_score": 0.4400104828461169
+        },
+        {
+          "doc_name": "retention_policy.txt",
+          "section_title": "General",
+          "section_id": 0,
+          "chunk_id": 0,
+          "text": "Customer transaction records must be retained for 7 years. Archived records must remain accessible for audit and regulatory review. Deletion of retained records before the retention period ends is prohibited unless required by law.",
+          "semantic_score": 0.028138622641563416,
+          "semantic_score_norm": 0.0,
+          "keyword_score": 0.0,
+          "keyword_score_norm": 1.0,
+          "hybrid_score": 0.4,
+          "term_coverage_score": 0.0,
+          "rerank_score": 0.27999999999999997
+        }
+      ]
+    },
+    {
+      "question": "Which team owns customer profitability metrics?",
+      "notes": "Unsupported ownership variation",
+      "expected_answered": false,
+      "actual_answered": false,
+      "answered_correctly": true,
+      "expected_doc": null,
+      "top_retrieved_doc": "access_policy.txt",
+      "doc_match": null,
+      "answer": "I do not have enough evidence from the retrieved context.",
+      "keyword_check": {
+        "matched_keywords": [],
+        "matched_count": 0,
+        "total_expected_keywords": 0,
+        "keyword_coverage": null
+      },
+      "answer_quality_pass": true,
+      "grounding": {
+        "grounding_score": 0.1,
+        "grounding_verdict": "downgraded_to_refusal",
+        "grounded": false
+      },
+      "top_chunks": [
+        {
+          "doc_name": "access_policy.txt",
+          "section_title": "General",
+          "section_id": 0,
+          "chunk_id": 0,
+          "text": "Access to sensitive customer data must be restricted to authorized personnel only. All access to confidential and regulated data must be logged. Quarterly reviews must be performed to confirm that access remains appropriate.",
+          "semantic_score": 0.16263186931610107,
+          "semantic_score_norm": 0.9245300417445576,
+          "keyword_score": 0.0,
+          "keyword_score_norm": 1.0,
+          "hybrid_score": 0.9547180250467345,
+          "term_coverage_score": 0.16666666666666666,
+          "rerank_score": 0.7183026175327142
+        },
+        {
+          "doc_name": "quality_policy.txt",
+          "section_title": "General",
+          "section_id": 0,
+          "chunk_id": 0,
+          "text": "Data quality issues must be documented and escalated to the responsible data steward. Critical data defects must be reviewed within one business day. Recurring quality issues must be tracked for root cause analysis and remediation.",
+          "semantic_score": 0.17209568619728088,
+          "semantic_score_norm": 1.0,
+          "keyword_score": 0.0,
+          "keyword_score_norm": 1.0,
+          "hybrid_score": 1.0,
+          "term_coverage_score": 0.0,
+          "rerank_score": 0.7
+        },
+        {
+          "doc_name": "retention_policy.txt",
+          "section_title": "General",
+          "section_id": 0,
+          "chunk_id": 0,
+          "text": "Customer transaction records must be retained for 7 years. Archived records must remain accessible for audit and regulatory review. Deletion of retained records before the retention period ends is prohibited unless required by law.",
+          "semantic_score": 0.09844988584518433,
+          "semantic_score_norm": 0.4127057245460482,
+          "keyword_score": 0.0,
+          "keyword_score_norm": 1.0,
+          "hybrid_score": 0.647623434727629,
+          "term_coverage_score": 0.16666666666666666,
+          "rerank_score": 0.5033364043093402
+        },
+        {
+          "doc_name": "access_policy.txt",
+          "section_title": "General",
+          "section_id": 0,
+          "chunk_id": 1,
+          "text": "Quarterly reviews must be performed to confirm that access remains appropriate. Temporary access to sensitive data must expire within 24 hours unless renewed and approved.",
+          "semantic_score": 0.0466972216963768,
+          "semantic_score_norm": 0.0,
+          "keyword_score": 0.0,
+          "keyword_score_norm": 1.0,
+          "hybrid_score": 0.4,
+          "term_coverage_score": 0.0,
+          "rerank_score": 0.27999999999999997
+        }
+      ]
+    }
+  ]
+}

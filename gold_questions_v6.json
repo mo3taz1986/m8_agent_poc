@@ -1,0 +1,32 @@
+[
+  {
+    "question": "How long should records be kept after account closure?",
+    "expected_answered": true,
+    "category": "supported"
+  },
+  {
+    "question": "How long can temporary access remain active?",
+    "expected_answered": true,
+    "category": "supported"
+  },
+  {
+    "question": "Who is allowed to access sensitive customer data?",
+    "expected_answered": true,
+    "category": "supported"
+  },
+  {
+    "question": "What happens with recurring quality issues?",
+    "expected_answered": true,
+    "category": "supported"
+  },
+  {
+    "question": "Who owns customer profitability reporting?",
+    "expected_answered": false,
+    "category": "unsupported"
+  },
+  {
+    "question": "What is the CEO escalation path for policy exceptions?",
+    "expected_answered": false,
+    "category": "unsupported"
+  }
+]

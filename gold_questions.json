@@ -1,0 +1,100 @@
+[
+  {
+    "question": "How long should records be kept after account closure?",
+    "expected_answered": true,
+    "expected_doc": "retention_policy.txt",
+    "expected_keywords": ["7 years", "account closure", "retained"],
+    "notes": "Retention period question"
+  },
+  {
+    "question": "Are archived records required to stay available for audit?",
+    "expected_answered": true,
+    "expected_doc": "retention_policy.txt",
+    "expected_keywords": ["accessible", "audit", "regulatory review"],
+    "notes": "Archived records accessibility"
+  },
+  {
+    "question": "Can retained records be deleted early?",
+    "expected_answered": true,
+    "expected_doc": "retention_policy.txt",
+    "expected_keywords": ["prohibited", "before the retention period ends", "required by law"],
+    "notes": "Early deletion restriction"
+  },
+  {
+    "question": "Who is allowed to access sensitive customer data?",
+    "expected_answered": true,
+    "expected_doc": "access_policy.txt",
+    "expected_keywords": ["authorized personnel", "restricted"],
+    "notes": "Access control"
+  },
+  {
+    "question": "Does access to confidential data need to be logged?",
+    "expected_answered": true,
+    "expected_doc": "access_policy.txt",
+    "expected_keywords": ["logged", "confidential", "regulated data"],
+    "notes": "Logging requirement"
+  },
+  {
+    "question": "How often should access reviews happen?",
+    "expected_answered": true,
+    "expected_doc": "access_policy.txt",
+    "expected_keywords": ["quarterly reviews", "appropriate"],
+    "notes": "Periodic review"
+  },
+  {
+    "question": "How long can temporary access remain active?",
+    "expected_answered": true,
+    "expected_doc": "access_policy.txt",
+    "expected_keywords": ["24 hours", "renewed", "approved"],
+    "notes": "Temporary access duration"
+  },
+  {
+    "question": "What should happen to critical data defects?",
+    "expected_answered": true,
+    "expected_doc": "quality_policy.txt",
+    "expected_keywords": ["reviewed", "one business day", "critical data defects"],
+    "notes": "Critical defect handling"
+  },
+  {
+    "question": "What happens to recurring quality issues?",
+    "expected_answered": true,
+    "expected_doc": "quality_policy.txt",
+    "expected_keywords": ["tracked", "root cause analysis", "remediation"],
+    "notes": "Recurring issue treatment"
+  },
+  {
+    "question": "Who should receive escalations for data quality issues?",
+    "expected_answered": true,
+    "expected_doc": "quality_policy.txt",
+    "expected_keywords": ["responsible data steward", "documented", "escalated"],
+    "notes": "Escalation target"
+  },
+  {
+    "question": "Who owns customer profitability reporting?",
+    "expected_answered": false,
+    "expected_doc": null,
+    "expected_keywords": [],
+    "notes": "Unsupported ownership question"
+  },
+  {
+    "question": "What policy defines credit risk appetite thresholds?",
+    "expected_answered": false,
+    "expected_doc": null,
+    "expected_keywords": [],
+    "notes": "Unsupported policy question"
+  },
+  {
+    "question": "Who approves marketing segmentation changes?",
+    "expected_answered": false,
+    "expected_doc": null,
+    "expected_keywords": [],
+    "notes": "Unsupported approval question"
+  },
+  {
+    "question": "Which team owns customer profitability metrics?",
+    "expected_answered": false,
+    "expected_doc": null,
+    "expected_keywords": [],
+    "notes": "Unsupported ownership variation"
+  }
+]

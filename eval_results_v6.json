@@ -1,0 +1,94 @@
+{
+  "summary": {
+    "total": 6,
+    "accuracy": 0.6666666666666666,
+    "supported_accuracy": 0.75,
+    "unsupported_accuracy": 0.5
+  },
+  "results": [
+    {
+      "question": "How long should records be kept after account closure?",
+      "category": "supported",
+      "expected_answered": true,
+      "actual_answered": false,
+      "answered_correctly": false,
+      "answer": "I do not have enough evidence from the retrieved context.",
+      "confidence": "low",
+      "grounding": {
+        "score": 0.1,
+        "verdict": "downgraded_to_refusal"
+      },
+      "top_source": "retention_policy.txt"
+    },
+    {
+      "question": "How long can temporary access remain active?",
+      "category": "supported",
+      "expected_answered": true,
+      "actual_answered": true,
+      "answered_correctly": true,
+      "answer": "Temporary access to sensitive data can remain active for a maximum of 24 hours unless renewed and approved.\n\n**Evidence:**\nFrom access_policy.txt, Section: General: \"Temporary access to sensitive data must expire within 24 hours unless renewed and approved.\"",
+      "confidence": "high",
+      "grounding": {
+        "score": 0.7777777777777778,
+        "verdict": "grounded"
+      },
+      "top_source": "access_policy.txt"
+    },
+    {
+      "question": "Who is allowed to access sensitive customer data?",
+      "category": "supported",
+      "expected_answered": true,
+      "actual_answered": true,
+      "answered_correctly": true,
+      "answer": "Only authorized personnel are allowed to access sensitive customer data.\n\n**Evidence:**\nThe access policy clearly states that \"Access to sensitive customer data must be restricted to authorized personnel only\" (access_policy.txt, Section: General). The policy also requires that \"All access to confidential and regulated data must be logged\" and mandates \"Quarterly reviews must be performed to confirm that access remains appropriate\" to ensure ongoing authorization (access_policy.txt, Section: General).",
+      "confidence": "high",
+      "grounding": {
+        "score": 0.8,
+        "verdict": "grounded"
+      },
+      "top_source": "access_policy.txt"
+    },
+    {
+      "question": "What happens with recurring quality issues?",
+      "category": "supported",
+      "expected_answered": true,
+      "actual_answered": true,
+      "answered_correctly": true,
+      "answer": "Recurring quality issues must be tracked for root cause analysis and remediation.\n\n**Evidence:**\nThe quality policy specifies that \"Recurring quality issues must be tracked for root cause analysis and remediation\" (quality_policy.txt, General section). This indicates a systematic approach where recurring problems are not just noted but actively analyzed to identify underlying causes and implement fixes.",
+      "confidence": "high",
+      "grounding": {
+        "score": 1.0,
+        "verdict": "grounded"
+      },
+      "top_source": "quality_policy.txt"
+    },
+    {
+      "question": "Who owns customer profitability reporting?",
+      "category": "unsupported",
+      "expected_answered": false,
+      "actual_answered": false,
+      "answered_correctly": true,
+      "answer": "I do not have enough evidence from the retrieved context.",
+      "confidence": "low",
+      "grounding": {
+        "score": 0.1,
+        "verdict": "downgraded_to_refusal"
+      },
+      "top_source": "ingested\\MoatazMahmoud_Data_AI_Strategy_Leader.txt"
+    },
+    {
+      "question": "What is the CEO escalation path for policy exceptions?",
+      "category": "unsupported",
+      "expected_answered": false,
+      "actual_answered": true,
+      "answered_correctly": false,
+      "answer": "I do not have enough evidence from the retrieved context.\n\n**Evidence:**\nThe retrieved context contains information about data analytics leadership roles and a customer transaction records retention policy, but does not include any information about CEO escalation paths or policy exception processes. None of the documents mention escalation procedures, exception handling processes, or CEO involvement in policy matters.",
+      "confidence": "low",
+      "grounding": {
+        "score": 0.2,
+        "verdict": "grounded"
+      },
+      "top_source": "ingested\\MoatazMahmoud_Data_AI_Strategy_Leader.txt"
+    }
+  ]
+}
