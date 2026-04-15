@@ -1,9 +1,9 @@
 from __future__ import annotations
-
+ 
 import re
 from typing import Dict, List, Optional
-
-
+ 
+ 
 SHAPE_KEYWORDS = {
     "dashboard": ["dashboard", "scorecard"],
     "report": ["report", "reporting"],
@@ -11,7 +11,7 @@ SHAPE_KEYWORDS = {
     "data_asset": ["dataset", "view", "table"],
     "integration": ["integration", "api", "sync"],
 }
-
+ 
 STAKEHOLDER_HINTS = [
     "leadership",
     "leaders",
@@ -24,7 +24,7 @@ STAKEHOLDER_HINTS = [
     "executives",
     "operations",
 ]
-
+ 
 DIMENSION_HINTS = [
     "segment",
     "customer",
@@ -34,48 +34,57 @@ DIMENSION_HINTS = [
     "drilldown",
     "drilldowns",
 ]
-
-
+ 
+REQUIRED_FIELDS = [
+    "business_objective",
+    "scope",
+    "stakeholders",
+    "data_sources",
+    "frequency",
+    "success_criteria",
+]
+ 
+ 
 def normalize(text: Optional[str]) -> str:
     return " ".join((text or "").lower().strip().split())
-
-
+ 
+ 
 def extract_shape(text: str) -> Optional[str]:
     text = normalize(text)
-
+ 
     for shape, keywords in SHAPE_KEYWORDS.items():
         if any(keyword in text for keyword in keywords):
             return shape
-
+ 
     return None
-
-
+ 
+ 
 def extract_stakeholders(text: str) -> Optional[str]:
     text = normalize(text)
     found = [hint for hint in STAKEHOLDER_HINTS if hint in text]
-
+ 
     if not found:
         return None
-
+ 
     return ", ".join(sorted(set(hint.title() for hint in found)))
-
-
+ 
+ 
 def extract_dimensions(text: str) -> List[str]:
     text = normalize(text)
     results: List[str] = []
-
+ 
     for dim in DIMENSION_HINTS:
         if dim in text:
             title = dim.title()
             if title not in results:
                 results.append(title)
-
+ 
     return results
-
-
+ 
+ 
 def extract_business_objective(text: str) -> Optional[str]:
     text_lower = text.lower()
-
+ 
     patterns = [
         r"(identify .+)",
         r"(track .+)",
@@ -85,23 +94,23 @@ def extract_business_objective(text: str) -> Optional[str]:
         r"(support .+)",
         r"(take action.+)",
     ]
-
+ 
     for pattern in patterns:
         match = re.search(pattern, text_lower)
         if match:
             return match.group(1).strip().rstrip(".")
-
+ 
     if "to " in text_lower:
         idx = text_lower.find("to ")
         return text[idx:].strip().rstrip(".")
-
+ 
     return None
-
-
+ 
+ 
 def extract_success_criteria(text: str, current_question: Optional[str]) -> Optional[str]:
     normalized_question = normalize(current_question)
     normalized_text = normalize(text)
-
+ 
     success_keywords = [
         "successful",
         "success",
@@ -110,16 +119,16 @@ def extract_success_criteria(text: str, current_question: Optional[str]) -> Opti
         "delivering value",
         "valuable",
     ]
-
+ 
     if any(keyword in normalized_question for keyword in success_keywords):
         if "take action" in normalized_text:
             return text.strip()
         if any(term in normalized_text for term in ["improve", "increase", "reduce", "adopt", "use"]):
             return text.strip()
-
+ 
     return None
-
-
+ 
+ 
 def build_field_updates(
     current_field: Optional[str],
     user_input: str,
@@ -129,46 +138,67 @@ def build_field_updates(
     objective: Optional[str],
     success_criteria: Optional[str],
     dimensions: List[str],
+    requirement_state: Optional[Dict] = None,
 ) -> Dict[str, str]:
     updates: Dict[str, str] = {}
     normalized_question = normalize(current_question)
-
-    if shape:
+ 
+    # Helper: only write to a field if it is not already answered
+    # unless it is the field currently being asked about.
+    def _can_write(field: str) -> bool:
+        if field == current_field:
+            return True
+        if requirement_state is None:
+            return True
+        existing = requirement_state.get(field)
+        if existing is None:
+            return True
+        if isinstance(existing, str) and not existing.strip():
+            return True
+        return False
+ 
+    if shape and _can_write("scope"):
         updates["scope"] = user_input
-
-    if stakeholders:
+ 
+    if stakeholders and _can_write("stakeholders"):
         updates["stakeholders"] = stakeholders
-
-    if success_criteria:
+ 
+    if success_criteria and _can_write("success_criteria"):
         updates["success_criteria"] = success_criteria
     elif objective:
         if any(term in normalized_question for term in ["success", "valuable", "business result", "measurable change"]):
-            updates["success_criteria"] = objective
+            if _can_write("success_criteria"):
+                updates["success_criteria"] = objective
         else:
-            updates["business_objective"] = objective
-
+            if _can_write("business_objective"):
+                updates["business_objective"] = objective
+ 
     if dimensions:
-        scope_value = updates.get("scope") or user_input
-        updates["scope"] = f"{scope_value} | Dimensions: {', '.join(dimensions)}"
-
+        # Only append dimensions to scope if scope is the current field
+        # or scope has not been answered yet, to avoid overwriting a confirmed answer.
+        if _can_write("scope"):
+            scope_value = updates.get("scope") or user_input
+            updates["scope"] = f"{scope_value} | Dimensions: {', '.join(dimensions)}"
+ 
     if not updates and current_field:
         updates[current_field] = user_input
-
+ 
     return updates
-
-
+ 
+ 
 def interpret_clarification_answer(
     original_request: str,
     current_question: Optional[str],
     current_field: Optional[str],
     user_input: str,
+    requirement_state: Optional[Dict] = None,
 ) -> Dict:
     shape = extract_shape(user_input)
     stakeholders = extract_stakeholders(user_input)
     objective = extract_business_objective(user_input)
     dimensions = extract_dimensions(user_input)
     success_criteria = extract_success_criteria(user_input, current_question)
-
+ 
     updates = build_field_updates(
         current_field=current_field,
         user_input=user_input,
@@ -178,8 +208,9 @@ def interpret_clarification_answer(
         objective=objective,
         success_criteria=success_criteria,
         dimensions=dimensions,
+        requirement_state=requirement_state,
     )
-
+ 
     confidence = 0.0
     if shape:
         confidence += 0.25
@@ -191,7 +222,7 @@ def interpret_clarification_answer(
         confidence += 0.20
     if dimensions:
         confidence += 0.10
-
+ 
     return {
         "confidence": round(min(confidence, 1.0), 2),
         "shape": shape,
