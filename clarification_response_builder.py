@@ -11,6 +11,14 @@ load_dotenv(dotenv_path=ROOT_DIR / ".env")
 
 from anthropic import Anthropic
 
+# Generic messages from ba_service that carry no shape or metadata content.
+# When message equals one of these, we do NOT prepend it — the reflection
+# text alone is sufficient.
+_GENERIC_OPENING_MESSAGES = {
+    "I've started shaping this request into a structured requirement package.",
+    "I incorporated your last answer and I need one more detail before moving forward.",
+}
+
 
 def _sentence(text: str) -> str:
     cleaned = (text or "").strip()
@@ -135,7 +143,17 @@ def build_clarification_feedback(
     next_question: Optional[str],
     current_question: Optional[str] = None,
     current_question_reason: Optional[str] = None,
+    opening_message: Optional[str] = None,
 ) -> Dict:
+    """
+    Build the clarification feedback payload for a single BA turn.
+
+    opening_message — optional message from ba_service containing the
+    shape-aware opening and any metadata note. When provided and non-generic,
+    it replaces the hardcoded "Happy to help with that." prefix so the user
+    sees the Meaning Agent's resolved label and any metadata overlap warning
+    on the very first turn.
+    """
     fields_to_update = interpreted.get("fields_to_update", {}) or {}
     answer_status = "sufficient" if interpreted.get("should_override_single_field_write") else "partial"
 
@@ -149,10 +167,21 @@ def build_clarification_feedback(
     final_question = _sentence(next_question or "")
 
     if answer_status == "weak":
+        # Determine the opener for the first-turn response.
+        # If ba_service provided a shape-aware or metadata-enriched message,
+        # use it instead of the generic "Happy to help with that." hardcode.
+        # This is the fix: the generic message was swallowing the shape label
+        # and metadata note that ba_service constructed.
+        clean_opening = (opening_message or "").strip()
+        if clean_opening and clean_opening not in _GENERIC_OPENING_MESSAGES:
+            opener = clean_opening
+        else:
+            opener = "Happy to help with that."
+
         reflection_text = (
-            f"Happy to help with that.\n\n"
+            f"{opener}\n\n"
             f"{reflection}\n\n"
-            f"I’ll shape this into a clear requirement before execution."
+            f"I'll shape this into a clear requirement before execution."
         )
     else:
         reflection_text = reflection
