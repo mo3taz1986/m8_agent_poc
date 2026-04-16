@@ -1,0 +1,2931 @@
+[
+  {
+    "asset_id": "dash_001",
+    "name": "Product Sales Profitability Dashboard",
+    "type": "interactive_dashboard",
+    "domain": [
+      "finance",
+      "product"
+    ],
+    "description": "Leadership dashboard showing product-level P&L, gross margin, and contribution margin by segment and region",
+    "data_sources": [
+      "customer_domain",
+      "product_domain",
+      "finance_domain"
+    ],
+    "stakeholders": [
+      "leadership",
+      "finance",
+      "product managers"
+    ],
+    "status": "live",
+    "owner": "Finance Analytics",
+    "tags": [
+      "profitability",
+      "margin",
+      "product",
+      "P&L",
+      "dashboard",
+      "leadership"
+    ]
+  },
+  {
+    "asset_id": "dash_002",
+    "name": "Customer Churn Risk Dashboard",
+    "type": "interactive_dashboard",
+    "domain": [
+      "customer",
+      "analytics"
+    ],
+    "description": "Real-time dashboard tracking churn probability scores, at-risk cohorts, and retention intervention triggers",
+    "data_sources": [
+      "customer_domain",
+      "engagement_domain",
+      "product_usage_domain"
+    ],
+    "stakeholders": [
+      "product managers",
+      "customer success",
+      "leadership"
+    ],
+    "status": "live",
+    "owner": "Customer Analytics",
+    "tags": [
+      "churn",
+      "retention",
+      "customer",
+      "risk",
+      "scoring"
+    ]
+  },
+  {
+    "asset_id": "dash_003",
+    "name": "Executive KPI Scorecard",
+    "type": "interactive_dashboard",
+    "domain": [
+      "finance",
+      "operations"
+    ],
+    "description": "Weekly executive scorecard covering revenue, EBITDA, headcount, and strategic initiative progress",
+    "data_sources": [
+      "finance_domain",
+      "hr_domain",
+      "operations_domain"
+    ],
+    "stakeholders": [
+      "executives",
+      "leadership",
+      "board"
+    ],
+    "status": "live",
+    "owner": "Strategy & Finance",
+    "tags": [
+      "KPI",
+      "scorecard",
+      "executive",
+      "revenue",
+      "EBITDA",
+      "weekly"
+    ]
+  },
+  {
+    "asset_id": "dash_004",
+    "name": "Marketing Campaign Performance Dashboard",
+    "type": "interactive_dashboard",
+    "domain": [
+      "marketing",
+      "analytics"
+    ],
+    "description": "Campaign-level attribution, spend efficiency, conversion rates, and ROI by channel and audience segment",
+    "data_sources": [
+      "marketing_domain",
+      "crm_domain",
+      "finance_domain"
+    ],
+    "stakeholders": [
+      "marketing team",
+      "finance",
+      "analytics team"
+    ],
+    "status": "live",
+    "owner": "Marketing Analytics",
+    "tags": [
+      "campaign",
+      "attribution",
+      "conversion",
+      "ROI",
+      "marketing",
+      "spend"
+    ]
+  },
+  {
+    "asset_id": "dash_005",
+    "name": "Operations Capacity & Utilisation Dashboard",
+    "type": "interactive_dashboard",
+    "domain": [
+      "operations"
+    ],
+    "description": "Real-time view of resource utilisation, throughput, SLA compliance, and capacity planning forecasts",
+    "data_sources": [
+      "operations_domain",
+      "scheduling_domain"
+    ],
+    "stakeholders": [
+      "operations team",
+      "management"
+    ],
+    "status": "live",
+    "owner": "Operations",
+    "tags": [
+      "capacity",
+      "utilisation",
+      "SLA",
+      "throughput",
+      "operations"
+    ]
+  },
+  {
+    "asset_id": "dash_006",
+    "name": "Data Quality Monitoring Dashboard",
+    "type": "interactive_dashboard",
+    "domain": [
+      "data governance",
+      "engineering"
+    ],
+    "description": "Monitors data completeness, freshness, schema drift, and anomaly detection across all critical data assets",
+    "data_sources": [
+      "dq_monitoring_domain",
+      "metadata_domain"
+    ],
+    "stakeholders": [
+      "data team",
+      "analytics team",
+      "data stewards"
+    ],
+    "status": "live",
+    "owner": "Data Governance",
+    "tags": [
+      "data quality",
+      "completeness",
+      "freshness",
+      "anomaly",
+      "monitoring",
+      "governance"
+    ]
+  },
+  {
+    "asset_id": "dash_007",
+    "name": "Sales Pipeline & Forecast Dashboard",
+    "type": "interactive_dashboard",
+    "domain": [
+      "sales",
+      "finance"
+    ],
+    "description": "Live pipeline stages, deal velocity, forecast accuracy, and rep performance by region and product line",
+    "data_sources": [
+      "crm_domain",
+      "finance_domain"
+    ],
+    "stakeholders": [
+      "sales team",
+      "leadership",
+      "finance"
+    ],
+    "status": "live",
+    "owner": "Sales Operations",
+    "tags": [
+      "sales",
+      "pipeline",
+      "forecast",
+      "CRM",
+      "deal velocity",
+      "rep performance"
+    ]
+  },
+  {
+    "asset_id": "dash_008",
+    "name": "Customer Lifetime Value Dashboard",
+    "type": "interactive_dashboard",
+    "domain": [
+      "customer",
+      "finance"
+    ],
+    "description": "CLV segmentation, cohort-level LTV trends, acquisition cost vs lifetime value ratios",
+    "data_sources": [
+      "customer_domain",
+      "finance_domain",
+      "product_domain"
+    ],
+    "stakeholders": [
+      "finance",
+      "product managers",
+      "marketing team"
+    ],
+    "status": "live",
+    "owner": "Finance Analytics",
+    "tags": [
+      "CLV",
+      "LTV",
+      "lifetime value",
+      "cohort",
+      "customer",
+      "acquisition"
+    ]
+  },
+  {
+    "asset_id": "dash_009",
+    "name": "Supply Chain Visibility Dashboard",
+    "type": "interactive_dashboard",
+    "domain": [
+      "operations",
+      "supply chain"
+    ],
+    "description": "End-to-end supply chain status, inventory levels, supplier performance, and lead time trends",
+    "data_sources": [
+      "supply_chain_domain",
+      "inventory_domain",
+      "supplier_domain"
+    ],
+    "stakeholders": [
+      "operations team",
+      "management",
+      "procurement"
+    ],
+    "status": "live",
+    "owner": "Supply Chain",
+    "tags": [
+      "supply chain",
+      "inventory",
+      "supplier",
+      "lead time",
+      "procurement"
+    ]
+  },
+  {
+    "asset_id": "dash_010",
+    "name": "HR Workforce Analytics Dashboard",
+    "type": "interactive_dashboard",
+    "domain": [
+      "hr",
+      "finance"
+    ],
+    "description": "Headcount trends, attrition analysis, hiring funnel performance, and compensation benchmarking",
+    "data_sources": [
+      "hr_domain",
+      "finance_domain"
+    ],
+    "stakeholders": [
+      "management",
+      "executives",
+      "hr"
+    ],
+    "status": "live",
+    "owner": "HR Analytics",
+    "tags": [
+      "headcount",
+      "attrition",
+      "hiring",
+      "compensation",
+      "workforce",
+      "HR"
+    ]
+  },
+  {
+    "asset_id": "dash_011",
+    "name": "Product Feature Adoption Dashboard",
+    "type": "interactive_dashboard",
+    "domain": [
+      "product",
+      "analytics"
+    ],
+    "description": "Feature-level adoption funnels, activation rates, and engagement depth by user segment and cohort",
+    "data_sources": [
+      "product_usage_domain",
+      "customer_domain"
+    ],
+    "stakeholders": [
+      "product managers",
+      "analytics team"
+    ],
+    "status": "live",
+    "owner": "Product Analytics",
+    "tags": [
+      "feature adoption",
+      "activation",
+      "engagement",
+      "product",
+      "funnel"
+    ]
+  },
+  {
+    "asset_id": "dash_012",
+    "name": "Revenue Recognition Dashboard",
+    "type": "interactive_dashboard",
+    "domain": [
+      "finance"
+    ],
+    "description": "ASC 606 compliant revenue recognition tracking, deferred revenue schedules, and waterfall analysis",
+    "data_sources": [
+      "finance_domain",
+      "contracts_domain"
+    ],
+    "stakeholders": [
+      "finance",
+      "executives",
+      "auditors"
+    ],
+    "status": "live",
+    "owner": "Finance",
+    "tags": [
+      "revenue recognition",
+      "deferred revenue",
+      "ASC 606",
+      "waterfall",
+      "compliance"
+    ]
+  },
+  {
+    "asset_id": "report_001",
+    "name": "Monthly Finance Performance Report",
+    "type": "reporting_output",
+    "domain": [
+      "finance"
+    ],
+    "description": "Consolidated monthly P&L, balance sheet movements, variance analysis vs budget and prior year",
+    "data_sources": [
+      "finance_domain",
+      "planning_domain"
+    ],
+    "stakeholders": [
+      "finance",
+      "executives",
+      "leadership"
+    ],
+    "status": "live",
+    "owner": "Finance",
+    "tags": [
+      "monthly",
+      "P&L",
+      "variance",
+      "budget",
+      "finance",
+      "report"
+    ]
+  },
+  {
+    "asset_id": "report_002",
+    "name": "Quarterly Business Review Report",
+    "type": "reporting_output",
+    "domain": [
+      "finance",
+      "operations",
+      "product"
+    ],
+    "description": "QBR pack covering financials, product milestones, customer metrics, and strategic priorities",
+    "data_sources": [
+      "finance_domain",
+      "product_domain",
+      "customer_domain",
+      "operations_domain"
+    ],
+    "stakeholders": [
+      "executives",
+      "leadership",
+      "board"
+    ],
+    "status": "live",
+    "owner": "Strategy & Finance",
+    "tags": [
+      "QBR",
+      "quarterly",
+      "review",
+      "strategic",
+      "business review"
+    ]
+  },
+  {
+    "asset_id": "report_003",
+    "name": "Customer NPS & Satisfaction Report",
+    "type": "reporting_output",
+    "domain": [
+      "customer",
+      "product"
+    ],
+    "description": "Monthly NPS scores, CSAT trends, verbatim categorisation, and segment-level breakdown",
+    "data_sources": [
+      "survey_domain",
+      "customer_domain"
+    ],
+    "stakeholders": [
+      "product managers",
+      "customer success",
+      "leadership"
+    ],
+    "status": "live",
+    "owner": "Customer Experience",
+    "tags": [
+      "NPS",
+      "CSAT",
+      "satisfaction",
+      "customer",
+      "verbatim",
+      "monthly"
+    ]
+  },
+  {
+    "asset_id": "report_004",
+    "name": "Regulatory Compliance Report",
+    "type": "reporting_output",
+    "domain": [
+      "compliance",
+      "finance"
+    ],
+    "description": "Periodic regulatory submissions covering capital adequacy, liquidity ratios, and policy adherence",
+    "data_sources": [
+      "finance_domain",
+      "risk_domain",
+      "compliance_domain"
+    ],
+    "stakeholders": [
+      "compliance",
+      "executives",
+      "auditors"
+    ],
+    "status": "live",
+    "owner": "Compliance",
+    "tags": [
+      "regulatory",
+      "compliance",
+      "capital",
+      "liquidity",
+      "submission",
+      "policy"
+    ]
+  },
+  {
+    "asset_id": "report_005",
+    "name": "Weekly Sales Performance Report",
+    "type": "reporting_output",
+    "domain": [
+      "sales"
+    ],
+    "description": "Weekly closed deals, pipeline movement, activity metrics, and quota attainment by rep and team",
+    "data_sources": [
+      "crm_domain",
+      "finance_domain"
+    ],
+    "stakeholders": [
+      "sales team",
+      "management",
+      "leadership"
+    ],
+    "status": "live",
+    "owner": "Sales Operations",
+    "tags": [
+      "sales",
+      "weekly",
+      "quota",
+      "attainment",
+      "pipeline",
+      "activity"
+    ]
+  },
+  {
+    "asset_id": "report_006",
+    "name": "Annual Data Governance Report",
+    "type": "reporting_output",
+    "domain": [
+      "data governance"
+    ],
+    "description": "Annual review of data quality scores, stewardship coverage, policy compliance, and remediation outcomes",
+    "data_sources": [
+      "dq_monitoring_domain",
+      "metadata_domain",
+      "compliance_domain"
+    ],
+    "stakeholders": [
+      "data stewards",
+      "executives",
+      "compliance"
+    ],
+    "status": "live",
+    "owner": "Data Governance",
+    "tags": [
+      "governance",
+      "annual",
+      "stewardship",
+      "compliance",
+      "data quality"
+    ]
+  },
+  {
+    "asset_id": "report_007",
+    "name": "Product Release Notes Report",
+    "type": "reporting_output",
+    "domain": [
+      "product",
+      "engineering"
+    ],
+    "description": "Bi-weekly release summary covering shipped features, bug fixes, known issues, and next sprint plan",
+    "data_sources": [
+      "engineering_domain",
+      "product_domain"
+    ],
+    "stakeholders": [
+      "product managers",
+      "customer success",
+      "sales team"
+    ],
+    "status": "live",
+    "owner": "Product",
+    "tags": [
+      "release",
+      "bi-weekly",
+      "features",
+      "sprint",
+      "bugs",
+      "product"
+    ]
+  },
+  {
+    "asset_id": "report_008",
+    "name": "Customer Acquisition Cost Report",
+    "type": "reporting_output",
+    "domain": [
+      "marketing",
+      "finance"
+    ],
+    "description": "Monthly CAC by channel, campaign, and customer segment with payback period analysis",
+    "data_sources": [
+      "marketing_domain",
+      "finance_domain",
+      "crm_domain"
+    ],
+    "stakeholders": [
+      "marketing team",
+      "finance",
+      "leadership"
+    ],
+    "status": "live",
+    "owner": "Marketing Analytics",
+    "tags": [
+      "CAC",
+      "acquisition cost",
+      "payback",
+      "channel",
+      "marketing",
+      "monthly"
+    ]
+  },
+  {
+    "asset_id": "pipeline_001",
+    "name": "Customer 360 Consolidation Pipeline",
+    "type": "data_pipeline",
+    "domain": [
+      "customer",
+      "data engineering"
+    ],
+    "description": "Nightly consolidation of customer records from CRM, billing, and product usage into the unified customer domain",
+    "data_sources": [
+      "crm_domain",
+      "billing_domain",
+      "product_usage_domain"
+    ],
+    "stakeholders": [
+      "data team",
+      "analytics team",
+      "product managers"
+    ],
+    "status": "live",
+    "owner": "Data Engineering",
+    "tags": [
+      "customer 360",
+      "consolidation",
+      "CRM",
+      "billing",
+      "nightly",
+      "unification"
+    ]
+  },
+  {
+    "asset_id": "pipeline_002",
+    "name": "Finance General Ledger Ingestion Pipeline",
+    "type": "data_pipeline",
+    "domain": [
+      "finance",
+      "data engineering"
+    ],
+    "description": "Real-time ingestion of GL transactions from the ERP into the finance domain with currency normalisation",
+    "data_sources": [
+      "erp_domain"
+    ],
+    "stakeholders": [
+      "finance",
+      "data team"
+    ],
+    "status": "live",
+    "owner": "Data Engineering",
+    "tags": [
+      "GL",
+      "general ledger",
+      "ERP",
+      "ingestion",
+      "real-time",
+      "finance",
+      "currency"
+    ]
+  },
+  {
+    "asset_id": "pipeline_003",
+    "name": "Product Event Streaming Pipeline",
+    "type": "data_pipeline",
+    "domain": [
+      "product",
+      "data engineering"
+    ],
+    "description": "Kafka-based streaming pipeline capturing product events, enriching with user context, and landing in the product usage domain",
+    "data_sources": [
+      "product_events_stream",
+      "customer_domain"
+    ],
+    "stakeholders": [
+      "data team",
+      "product managers",
+      "analytics team"
+    ],
+    "status": "live",
+    "owner": "Data Engineering",
+    "tags": [
+      "events",
+      "streaming",
+      "Kafka",
+      "product",
+      "real-time",
+      "enrichment"
+    ]
+  },
+  {
+    "asset_id": "pipeline_004",
+    "name": "Marketing Attribution Pipeline",
+    "type": "data_pipeline",
+    "domain": [
+      "marketing",
+      "data engineering"
+    ],
+    "description": "Multi-touch attribution model applying last-touch, first-touch, and linear rules across campaign touchpoints",
+    "data_sources": [
+      "marketing_domain",
+      "crm_domain",
+      "ad_platforms_domain"
+    ],
+    "stakeholders": [
+      "marketing team",
+      "analytics team",
+      "finance"
+    ],
+    "status": "live",
+    "owner": "Marketing Analytics",
+    "tags": [
+      "attribution",
+      "multi-touch",
+      "campaign",
+      "last-touch",
+      "first-touch",
+      "marketing"
+    ]
+  },
+  {
+    "asset_id": "pipeline_005",
+    "name": "Risk Scoring Batch Pipeline",
+    "type": "data_pipeline",
+    "domain": [
+      "risk",
+      "data engineering"
+    ],
+    "description": "Nightly batch scoring of customer risk profiles using 14 input features across credit, behavioural, and transactional signals",
+    "data_sources": [
+      "customer_domain",
+      "transaction_domain",
+      "credit_domain"
+    ],
+    "stakeholders": [
+      "risk",
+      "compliance",
+      "data team"
+    ],
+    "status": "live",
+    "owner": "Risk Analytics",
+    "tags": [
+      "risk",
+      "scoring",
+      "batch",
+      "nightly",
+      "credit",
+      "behavioural",
+      "transactions"
+    ]
+  },
+  {
+    "asset_id": "pipeline_006",
+    "name": "Data Quality Monitoring Pipeline",
+    "type": "data_pipeline",
+    "domain": [
+      "data governance",
+      "data engineering"
+    ],
+    "description": "Hourly checks on completeness, uniqueness, referential integrity, and freshness across 38 critical data assets",
+    "data_sources": [
+      "all_domains"
+    ],
+    "stakeholders": [
+      "data team",
+      "data stewards"
+    ],
+    "status": "live",
+    "owner": "Data Governance",
+    "tags": [
+      "data quality",
+      "monitoring",
+      "completeness",
+      "freshness",
+      "integrity",
+      "hourly"
+    ]
+  },
+  {
+    "asset_id": "pipeline_007",
+    "name": "HR Payroll Ingestion Pipeline",
+    "type": "data_pipeline",
+    "domain": [
+      "hr",
+      "finance",
+      "data engineering"
+    ],
+    "description": "Monthly payroll data ingestion from HRIS into the HR domain with cost centre allocation mapping",
+    "data_sources": [
+      "hris_domain"
+    ],
+    "stakeholders": [
+      "hr",
+      "finance",
+      "data team"
+    ],
+    "status": "live",
+    "owner": "Data Engineering",
+    "tags": [
+      "payroll",
+      "HR",
+      "HRIS",
+      "monthly",
+      "cost centre",
+      "finance"
+    ]
+  },
+  {
+    "asset_id": "pipeline_008",
+    "name": "Inventory Sync Pipeline",
+    "type": "data_pipeline",
+    "domain": [
+      "supply chain",
+      "operations"
+    ],
+    "description": "Near real-time sync of inventory positions from warehouse management system to the supply chain domain",
+    "data_sources": [
+      "wms_domain"
+    ],
+    "stakeholders": [
+      "operations team",
+      "supply chain",
+      "data team"
+    ],
+    "status": "live",
+    "owner": "Operations",
+    "tags": [
+      "inventory",
+      "WMS",
+      "sync",
+      "real-time",
+      "warehouse",
+      "supply chain"
+    ]
+  },
+  {
+    "asset_id": "pipeline_009",
+    "name": "Customer Segmentation Refresh Pipeline",
+    "type": "data_pipeline",
+    "domain": [
+      "customer",
+      "marketing"
+    ],
+    "description": "Weekly re-segmentation of customers using RFM scoring, behavioural clustering, and propensity model outputs",
+    "data_sources": [
+      "customer_domain",
+      "transaction_domain",
+      "product_usage_domain"
+    ],
+    "stakeholders": [
+      "marketing team",
+      "analytics team",
+      "product managers"
+    ],
+    "status": "live",
+    "owner": "Customer Analytics",
+    "tags": [
+      "segmentation",
+      "RFM",
+      "clustering",
+      "propensity",
+      "weekly",
+      "customer"
+    ]
+  },
+  {
+    "asset_id": "pipeline_010",
+    "name": "Third-Party Data Enrichment Pipeline",
+    "type": "data_pipeline",
+    "domain": [
+      "customer",
+      "data engineering"
+    ],
+    "description": "Weekly enrichment of company and contact records with firmographic and technographic data from external providers",
+    "data_sources": [
+      "crm_domain",
+      "external_enrichment_provider"
+    ],
+    "stakeholders": [
+      "sales team",
+      "marketing team",
+      "data team"
+    ],
+    "status": "live",
+    "owner": "Data Engineering",
+    "tags": [
+      "enrichment",
+      "firmographic",
+      "technographic",
+      "third-party",
+      "CRM",
+      "weekly"
+    ]
+  },
+  {
+    "asset_id": "extract_001",
+    "name": "Customer Master Extract",
+    "type": "structured_extract",
+    "domain": [
+      "customer"
+    ],
+    "description": "Governed daily extract of the customer master record including identifiers, attributes, segment flags, and status codes",
+    "data_sources": [
+      "customer_domain"
+    ],
+    "stakeholders": [
+      "analytics team",
+      "data team",
+      "product managers"
+    ],
+    "status": "live",
+    "owner": "Customer Data",
+    "tags": [
+      "customer master",
+      "extract",
+      "daily",
+      "attributes",
+      "identifiers",
+      "governed"
+    ]
+  },
+  {
+    "asset_id": "extract_002",
+    "name": "Transaction History Extract",
+    "type": "structured_extract",
+    "domain": [
+      "finance",
+      "customer"
+    ],
+    "description": "Rolling 36-month transaction history extract with normalised amounts, merchant categories, and channel flags",
+    "data_sources": [
+      "transaction_domain",
+      "finance_domain"
+    ],
+    "stakeholders": [
+      "analytics team",
+      "risk",
+      "data team"
+    ],
+    "status": "live",
+    "owner": "Finance Analytics",
+    "tags": [
+      "transactions",
+      "history",
+      "36-month",
+      "merchant",
+      "channel",
+      "extract"
+    ]
+  },
+  {
+    "asset_id": "extract_003",
+    "name": "Product Catalogue Extract",
+    "type": "structured_extract",
+    "domain": [
+      "product"
+    ],
+    "description": "Current product catalogue extract including SKUs, pricing tiers, feature flags, and lifecycle status",
+    "data_sources": [
+      "product_domain"
+    ],
+    "stakeholders": [
+      "product managers",
+      "sales team",
+      "analytics team"
+    ],
+    "status": "live",
+    "owner": "Product",
+    "tags": [
+      "product catalogue",
+      "SKU",
+      "pricing",
+      "features",
+      "lifecycle",
+      "extract"
+    ]
+  },
+  {
+    "asset_id": "extract_004",
+    "name": "Revenue Metrics Extract",
+    "type": "structured_extract",
+    "domain": [
+      "finance"
+    ],
+    "description": "Daily certified revenue metrics extract \u2014 ARR, MRR, NRR, churn, and expansion by account and product",
+    "data_sources": [
+      "finance_domain",
+      "contracts_domain"
+    ],
+    "stakeholders": [
+      "finance",
+      "analytics team",
+      "leadership"
+    ],
+    "status": "live",
+    "owner": "Finance",
+    "tags": [
+      "ARR",
+      "MRR",
+      "NRR",
+      "revenue",
+      "churn",
+      "expansion",
+      "certified",
+      "daily"
+    ]
+  },
+  {
+    "asset_id": "extract_005",
+    "name": "Employee Headcount Extract",
+    "type": "structured_extract",
+    "domain": [
+      "hr"
+    ],
+    "description": "Monthly point-in-time headcount extract with department, level, location, and cost centre allocation",
+    "data_sources": [
+      "hr_domain"
+    ],
+    "stakeholders": [
+      "hr",
+      "finance",
+      "management"
+    ],
+    "status": "live",
+    "owner": "HR Analytics",
+    "tags": [
+      "headcount",
+      "employee",
+      "department",
+      "cost centre",
+      "monthly",
+      "HR"
+    ]
+  },
+  {
+    "asset_id": "extract_006",
+    "name": "Risk Exposure Extract",
+    "type": "structured_extract",
+    "domain": [
+      "risk",
+      "finance"
+    ],
+    "description": "Daily risk exposure extract across credit, market, and operational risk categories with regulatory bucketing",
+    "data_sources": [
+      "risk_domain",
+      "finance_domain"
+    ],
+    "stakeholders": [
+      "risk",
+      "compliance",
+      "finance"
+    ],
+    "status": "live",
+    "owner": "Risk",
+    "tags": [
+      "risk",
+      "exposure",
+      "credit",
+      "market",
+      "operational",
+      "regulatory",
+      "daily"
+    ]
+  },
+  {
+    "asset_id": "extract_007",
+    "name": "Support Ticket Extract",
+    "type": "structured_extract",
+    "domain": [
+      "customer",
+      "operations"
+    ],
+    "description": "Weekly extract of support tickets with classification, resolution time, CSAT, and escalation flags",
+    "data_sources": [
+      "support_domain",
+      "customer_domain"
+    ],
+    "stakeholders": [
+      "customer success",
+      "operations team",
+      "product managers"
+    ],
+    "status": "live",
+    "owner": "Customer Operations",
+    "tags": [
+      "support",
+      "tickets",
+      "CSAT",
+      "resolution",
+      "escalation",
+      "weekly"
+    ]
+  },
+  {
+    "asset_id": "view_001",
+    "name": "Customer Financial Summary View",
+    "type": "data_view",
+    "domain": [
+      "customer",
+      "finance"
+    ],
+    "description": "Governed SQL view joining customer master, billing, and revenue recognition into a single queryable surface",
+    "data_sources": [
+      "customer_domain",
+      "finance_domain",
+      "billing_domain"
+    ],
+    "stakeholders": [
+      "analytics team",
+      "data team",
+      "finance"
+    ],
+    "status": "live",
+    "owner": "Finance Analytics",
+    "tags": [
+      "customer",
+      "financial",
+      "summary",
+      "view",
+      "billing",
+      "governed"
+    ]
+  },
+  {
+    "asset_id": "view_002",
+    "name": "Product Usage Aggregated View",
+    "type": "data_view",
+    "domain": [
+      "product",
+      "customer"
+    ],
+    "description": "Pre-aggregated weekly product usage view by customer, feature group, and engagement tier",
+    "data_sources": [
+      "product_usage_domain",
+      "customer_domain"
+    ],
+    "stakeholders": [
+      "product managers",
+      "analytics team"
+    ],
+    "status": "live",
+    "owner": "Product Analytics",
+    "tags": [
+      "product usage",
+      "aggregated",
+      "weekly",
+      "feature",
+      "engagement",
+      "view"
+    ]
+  },
+  {
+    "asset_id": "view_003",
+    "name": "Sales Performance View",
+    "type": "data_view",
+    "domain": [
+      "sales"
+    ],
+    "description": "Materialised view of rep and team performance metrics refreshed daily from CRM and finance sources",
+    "data_sources": [
+      "crm_domain",
+      "finance_domain"
+    ],
+    "stakeholders": [
+      "sales team",
+      "sales operations",
+      "management"
+    ],
+    "status": "live",
+    "owner": "Sales Operations",
+    "tags": [
+      "sales",
+      "performance",
+      "rep",
+      "CRM",
+      "daily",
+      "materialised view"
+    ]
+  },
+  {
+    "asset_id": "view_004",
+    "name": "Regulatory Reporting Base View",
+    "type": "data_view",
+    "domain": [
+      "compliance",
+      "finance"
+    ],
+    "description": "Certified base view for regulatory calculations \u2014 pre-validated for completeness, accuracy, and lineage traceability",
+    "data_sources": [
+      "finance_domain",
+      "risk_domain"
+    ],
+    "stakeholders": [
+      "compliance",
+      "auditors",
+      "finance"
+    ],
+    "status": "live",
+    "owner": "Compliance",
+    "tags": [
+      "regulatory",
+      "compliance",
+      "certified",
+      "lineage",
+      "validated",
+      "base view"
+    ]
+  },
+  {
+    "asset_id": "view_005",
+    "name": "Marketing Audience Segmentation View",
+    "type": "data_view",
+    "domain": [
+      "marketing",
+      "customer"
+    ],
+    "description": "Pre-built audience segments with propensity scores, channel preferences, and suppress flags for campaign activation",
+    "data_sources": [
+      "customer_domain",
+      "marketing_domain"
+    ],
+    "stakeholders": [
+      "marketing team",
+      "analytics team"
+    ],
+    "status": "live",
+    "owner": "Marketing Analytics",
+    "tags": [
+      "audience",
+      "segmentation",
+      "propensity",
+      "campaign",
+      "activation",
+      "marketing"
+    ]
+  },
+  {
+    "asset_id": "view_006",
+    "name": "Inventory Position View",
+    "type": "data_view",
+    "domain": [
+      "supply chain",
+      "operations"
+    ],
+    "description": "Current inventory position view across all warehouses with reorder thresholds and supplier lead time context",
+    "data_sources": [
+      "inventory_domain",
+      "supplier_domain"
+    ],
+    "stakeholders": [
+      "operations team",
+      "supply chain",
+      "procurement"
+    ],
+    "status": "live",
+    "owner": "Supply Chain",
+    "tags": [
+      "inventory",
+      "position",
+      "reorder",
+      "supplier",
+      "lead time",
+      "warehouse"
+    ]
+  },
+  {
+    "asset_id": "view_007",
+    "name": "HR Cost Centre Allocation View",
+    "type": "data_view",
+    "domain": [
+      "hr",
+      "finance"
+    ],
+    "description": "People cost allocation view distributing salary, benefits, and overhead across cost centres and P&L lines",
+    "data_sources": [
+      "hr_domain",
+      "finance_domain"
+    ],
+    "stakeholders": [
+      "hr",
+      "finance",
+      "management"
+    ],
+    "status": "live",
+    "owner": "Finance",
+    "tags": [
+      "cost centre",
+      "allocation",
+      "salary",
+      "benefits",
+      "HR",
+      "P&L"
+    ]
+  },
+  {
+    "asset_id": "model_001",
+    "name": "Customer Churn Prediction Model",
+    "type": "analytical_model",
+    "domain": [
+      "customer",
+      "analytics"
+    ],
+    "description": "Gradient boosting model predicting 30-day churn probability using 47 behavioural and transactional features",
+    "data_sources": [
+      "customer_domain",
+      "product_usage_domain",
+      "transaction_domain"
+    ],
+    "stakeholders": [
+      "analytics team",
+      "product managers",
+      "customer success"
+    ],
+    "status": "live",
+    "owner": "Data Science",
+    "tags": [
+      "churn",
+      "prediction",
+      "gradient boosting",
+      "30-day",
+      "behavioural",
+      "model"
+    ]
+  },
+  {
+    "asset_id": "model_002",
+    "name": "Revenue Forecasting Model",
+    "type": "analytical_model",
+    "domain": [
+      "finance",
+      "analytics"
+    ],
+    "description": "ARIMA-based monthly revenue forecast by product line and region with 90-day rolling horizon",
+    "data_sources": [
+      "finance_domain",
+      "contracts_domain",
+      "product_domain"
+    ],
+    "stakeholders": [
+      "finance",
+      "leadership",
+      "analytics team"
+    ],
+    "status": "live",
+    "owner": "Finance Analytics",
+    "tags": [
+      "revenue",
+      "forecast",
+      "ARIMA",
+      "monthly",
+      "product line",
+      "90-day"
+    ]
+  },
+  {
+    "asset_id": "model_003",
+    "name": "Credit Risk Scoring Model",
+    "type": "analytical_model",
+    "domain": [
+      "risk",
+      "finance"
+    ],
+    "description": "Logistic regression credit risk score (0-1000) using 14 credit bureau, behavioural, and transactional features",
+    "data_sources": [
+      "credit_domain",
+      "transaction_domain",
+      "customer_domain"
+    ],
+    "stakeholders": [
+      "risk",
+      "compliance",
+      "finance"
+    ],
+    "status": "live",
+    "owner": "Risk Analytics",
+    "tags": [
+      "credit",
+      "risk",
+      "scoring",
+      "logistic regression",
+      "bureau",
+      "1000-point"
+    ]
+  },
+  {
+    "asset_id": "model_004",
+    "name": "Next Best Product Recommendation Model",
+    "type": "analytical_model",
+    "domain": [
+      "product",
+      "customer"
+    ],
+    "description": "Collaborative filtering model recommending next best product offers based on customer profile and peer cohort behaviour",
+    "data_sources": [
+      "customer_domain",
+      "product_domain",
+      "transaction_domain"
+    ],
+    "stakeholders": [
+      "product managers",
+      "marketing team",
+      "sales team"
+    ],
+    "status": "live",
+    "owner": "Product Analytics",
+    "tags": [
+      "recommendation",
+      "next best",
+      "collaborative filtering",
+      "product",
+      "customer"
+    ]
+  },
+  {
+    "asset_id": "model_005",
+    "name": "Demand Forecasting Model",
+    "type": "analytical_model",
+    "domain": [
+      "supply chain",
+      "operations"
+    ],
+    "description": "XGBoost-based weekly demand forecast by SKU and region incorporating seasonality, promotions, and macroeconomic signals",
+    "data_sources": [
+      "sales_domain",
+      "marketing_domain",
+      "external_macro_domain"
+    ],
+    "stakeholders": [
+      "operations team",
+      "supply chain",
+      "finance"
+    ],
+    "status": "live",
+    "owner": "Supply Chain Analytics",
+    "tags": [
+      "demand",
+      "forecast",
+      "XGBoost",
+      "SKU",
+      "seasonality",
+      "weekly"
+    ]
+  },
+  {
+    "asset_id": "model_006",
+    "name": "Customer Propensity to Buy Model",
+    "type": "analytical_model",
+    "domain": [
+      "customer",
+      "marketing"
+    ],
+    "description": "Propensity model scoring likelihood to purchase within 90 days by product category and channel",
+    "data_sources": [
+      "customer_domain",
+      "marketing_domain",
+      "product_domain"
+    ],
+    "stakeholders": [
+      "marketing team",
+      "sales team",
+      "analytics team"
+    ],
+    "status": "live",
+    "owner": "Marketing Analytics",
+    "tags": [
+      "propensity",
+      "purchase",
+      "90-day",
+      "category",
+      "channel",
+      "scoring"
+    ]
+  },
+  {
+    "asset_id": "model_007",
+    "name": "Employee Attrition Risk Model",
+    "type": "analytical_model",
+    "domain": [
+      "hr",
+      "analytics"
+    ],
+    "description": "Random forest model predicting 6-month attrition risk using engagement, tenure, performance, and compensation signals",
+    "data_sources": [
+      "hr_domain",
+      "engagement_domain"
+    ],
+    "stakeholders": [
+      "hr",
+      "management",
+      "analytics team"
+    ],
+    "status": "live",
+    "owner": "HR Analytics",
+    "tags": [
+      "attrition",
+      "retention",
+      "HR",
+      "random forest",
+      "6-month",
+      "engagement"
+    ]
+  },
+  {
+    "asset_id": "model_008",
+    "name": "Fraud Detection Model",
+    "type": "analytical_model",
+    "domain": [
+      "risk",
+      "operations"
+    ],
+    "description": "Real-time anomaly detection model flagging suspicious transactions using isolation forest and rule-based override layer",
+    "data_sources": [
+      "transaction_domain",
+      "customer_domain",
+      "device_domain"
+    ],
+    "stakeholders": [
+      "risk",
+      "operations team",
+      "compliance"
+    ],
+    "status": "live",
+    "owner": "Risk Analytics",
+    "tags": [
+      "fraud",
+      "detection",
+      "anomaly",
+      "real-time",
+      "transactions",
+      "isolation forest"
+    ]
+  },
+  {
+    "asset_id": "integration_001",
+    "name": "CRM to Marketing Automation Sync",
+    "type": "integration_request",
+    "domain": [
+      "sales",
+      "marketing"
+    ],
+    "description": "Bi-directional sync of contact, account, and opportunity records between Salesforce CRM and HubSpot marketing automation",
+    "data_sources": [
+      "crm_domain",
+      "marketing_domain"
+    ],
+    "stakeholders": [
+      "sales team",
+      "marketing team"
+    ],
+    "status": "live",
+    "owner": "Sales Operations",
+    "tags": [
+      "CRM",
+      "Salesforce",
+      "HubSpot",
+      "sync",
+      "bi-directional",
+      "marketing automation"
+    ]
+  },
+  {
+    "asset_id": "integration_002",
+    "name": "Finance ERP to Data Warehouse Integration",
+    "type": "integration_request",
+    "domain": [
+      "finance",
+      "data engineering"
+    ],
+    "description": "Certified integration from SAP ERP to the enterprise data warehouse covering GL, AP, AR, and cost centres",
+    "data_sources": [
+      "erp_domain"
+    ],
+    "stakeholders": [
+      "finance",
+      "data team"
+    ],
+    "status": "live",
+    "owner": "Data Engineering",
+    "tags": [
+      "ERP",
+      "SAP",
+      "data warehouse",
+      "GL",
+      "AP",
+      "AR",
+      "integration",
+      "finance"
+    ]
+  },
+  {
+    "asset_id": "integration_003",
+    "name": "Support Platform to Customer Domain Integration",
+    "type": "integration_request",
+    "domain": [
+      "customer",
+      "operations"
+    ],
+    "description": "Real-time integration from Zendesk to the customer domain, enriching customer records with support history and CSAT",
+    "data_sources": [
+      "support_domain",
+      "customer_domain"
+    ],
+    "stakeholders": [
+      "customer success",
+      "data team",
+      "product managers"
+    ],
+    "status": "live",
+    "owner": "Customer Operations",
+    "tags": [
+      "Zendesk",
+      "support",
+      "CSAT",
+      "customer",
+      "real-time",
+      "integration"
+    ]
+  },
+  {
+    "asset_id": "integration_004",
+    "name": "Ad Platform Attribution Integration",
+    "type": "integration_request",
+    "domain": [
+      "marketing",
+      "analytics"
+    ],
+    "description": "API integration pulling spend, impressions, and conversion data from Google Ads, Meta, and LinkedIn into the marketing domain",
+    "data_sources": [
+      "google_ads_api",
+      "meta_api",
+      "linkedin_api"
+    ],
+    "stakeholders": [
+      "marketing team",
+      "analytics team",
+      "finance"
+    ],
+    "status": "live",
+    "owner": "Marketing Analytics",
+    "tags": [
+      "Google Ads",
+      "Meta",
+      "LinkedIn",
+      "attribution",
+      "spend",
+      "impressions",
+      "API"
+    ]
+  },
+  {
+    "asset_id": "integration_005",
+    "name": "Payment Gateway to Finance Integration",
+    "type": "integration_request",
+    "domain": [
+      "finance",
+      "operations"
+    ],
+    "description": "Real-time payment event stream from Stripe to the finance domain with reconciliation against GL entries",
+    "data_sources": [
+      "stripe_api",
+      "finance_domain"
+    ],
+    "stakeholders": [
+      "finance",
+      "operations team"
+    ],
+    "status": "live",
+    "owner": "Finance",
+    "tags": [
+      "Stripe",
+      "payments",
+      "real-time",
+      "reconciliation",
+      "GL",
+      "finance"
+    ]
+  },
+  {
+    "asset_id": "integration_006",
+    "name": "HR System to Finance Cost Allocation Integration",
+    "type": "integration_request",
+    "domain": [
+      "hr",
+      "finance"
+    ],
+    "description": "Monthly integration from Workday HRIS to the finance cost allocation system mapping headcount costs to departments",
+    "data_sources": [
+      "hris_domain",
+      "finance_domain"
+    ],
+    "stakeholders": [
+      "hr",
+      "finance"
+    ],
+    "status": "live",
+    "owner": "Finance",
+    "tags": [
+      "Workday",
+      "HRIS",
+      "HR",
+      "cost allocation",
+      "finance",
+      "monthly",
+      "headcount"
+    ]
+  },
+  {
+    "asset_id": "integration_007",
+    "name": "Inventory to E-commerce Platform Integration",
+    "type": "integration_request",
+    "domain": [
+      "supply chain",
+      "operations"
+    ],
+    "description": "Near real-time inventory availability sync from WMS to the e-commerce platform preventing oversell",
+    "data_sources": [
+      "wms_domain",
+      "ecommerce_domain"
+    ],
+    "stakeholders": [
+      "operations team",
+      "supply chain"
+    ],
+    "status": "live",
+    "owner": "Operations",
+    "tags": [
+      "inventory",
+      "e-commerce",
+      "WMS",
+      "availability",
+      "oversell",
+      "real-time"
+    ]
+  },
+  {
+    "asset_id": "integration_008",
+    "name": "Data Catalogue API Integration",
+    "type": "integration_request",
+    "domain": [
+      "data governance"
+    ],
+    "description": "REST API integration exposing the internal metadata catalogue to downstream governance tools and consumer portals",
+    "data_sources": [
+      "metadata_domain"
+    ],
+    "stakeholders": [
+      "data team",
+      "data stewards",
+      "analytics team"
+    ],
+    "status": "live",
+    "owner": "Data Governance",
+    "tags": [
+      "metadata",
+      "catalogue",
+      "API",
+      "governance",
+      "REST",
+      "consumer portal"
+    ]
+  },
+  {
+    "asset_id": "workflow_001",
+    "name": "Data Access Request Approval Workflow",
+    "type": "workflow_automation",
+    "domain": [
+      "data governance",
+      "operations"
+    ],
+    "description": "Automated approval workflow for data access requests \u2014 routes by sensitivity level, triggers MFA provisioning, logs for audit",
+    "data_sources": [
+      "iam_domain",
+      "metadata_domain"
+    ],
+    "stakeholders": [
+      "data stewards",
+      "compliance",
+      "data team"
+    ],
+    "status": "live",
+    "owner": "Data Governance",
+    "tags": [
+      "access request",
+      "approval",
+      "workflow",
+      "sensitivity",
+      "MFA",
+      "audit",
+      "IAM"
+    ]
+  },
+  {
+    "asset_id": "workflow_002",
+    "name": "New Hire Data Provisioning Workflow",
+    "type": "workflow_automation",
+    "domain": [
+      "hr",
+      "operations"
+    ],
+    "description": "Automated provisioning workflow triggered by HR onboarding \u2014 creates accounts, assigns data permissions by role, sends welcome kit",
+    "data_sources": [
+      "hr_domain",
+      "iam_domain"
+    ],
+    "stakeholders": [
+      "hr",
+      "operations team",
+      "data team"
+    ],
+    "status": "live",
+    "owner": "IT Operations",
+    "tags": [
+      "onboarding",
+      "provisioning",
+      "HR",
+      "accounts",
+      "permissions",
+      "automation"
+    ]
+  },
+  {
+    "asset_id": "workflow_003",
+    "name": "Incident Escalation Workflow",
+    "type": "workflow_automation",
+    "domain": [
+      "operations",
+      "risk"
+    ],
+    "description": "Severity-based incident routing workflow \u2014 auto-escalates P1s to on-call, creates Jira tickets, and sends stakeholder notifications",
+    "data_sources": [
+      "monitoring_domain",
+      "iam_domain"
+    ],
+    "stakeholders": [
+      "operations team",
+      "engineering",
+      "management"
+    ],
+    "status": "live",
+    "owner": "Operations",
+    "tags": [
+      "incident",
+      "escalation",
+      "P1",
+      "on-call",
+      "Jira",
+      "notification",
+      "severity"
+    ]
+  },
+  {
+    "asset_id": "workflow_004",
+    "name": "Purchase Order Approval Workflow",
+    "type": "workflow_automation",
+    "domain": [
+      "finance",
+      "procurement"
+    ],
+    "description": "Multi-tier PO approval workflow based on spend thresholds, department budgets, and vendor risk classification",
+    "data_sources": [
+      "finance_domain",
+      "procurement_domain"
+    ],
+    "stakeholders": [
+      "finance",
+      "procurement",
+      "management"
+    ],
+    "status": "live",
+    "owner": "Finance",
+    "tags": [
+      "purchase order",
+      "PO",
+      "approval",
+      "spend",
+      "threshold",
+      "procurement",
+      "vendor"
+    ]
+  },
+  {
+    "asset_id": "workflow_005",
+    "name": "Data Quality Issue Remediation Workflow",
+    "type": "workflow_automation",
+    "domain": [
+      "data governance"
+    ],
+    "description": "Automated workflow routing critical DQ issues to responsible data stewards with SLA tracking and escalation paths",
+    "data_sources": [
+      "dq_monitoring_domain",
+      "metadata_domain"
+    ],
+    "stakeholders": [
+      "data stewards",
+      "data team",
+      "compliance"
+    ],
+    "status": "live",
+    "owner": "Data Governance",
+    "tags": [
+      "data quality",
+      "remediation",
+      "steward",
+      "SLA",
+      "escalation",
+      "workflow"
+    ]
+  },
+  {
+    "asset_id": "workflow_006",
+    "name": "Customer Offboarding Workflow",
+    "type": "workflow_automation",
+    "domain": [
+      "customer",
+      "operations"
+    ],
+    "description": "Structured offboarding workflow \u2014 triggers data retention checks, account closure, refund processing, and feedback survey",
+    "data_sources": [
+      "customer_domain",
+      "billing_domain",
+      "compliance_domain"
+    ],
+    "stakeholders": [
+      "customer success",
+      "finance",
+      "compliance"
+    ],
+    "status": "live",
+    "owner": "Customer Operations",
+    "tags": [
+      "offboarding",
+      "closure",
+      "retention",
+      "refund",
+      "feedback",
+      "customer",
+      "compliance"
+    ]
+  },
+  {
+    "asset_id": "workflow_007",
+    "name": "Contract Renewal Workflow",
+    "type": "workflow_automation",
+    "domain": [
+      "sales",
+      "finance",
+      "legal"
+    ],
+    "description": "90-day pre-renewal workflow \u2014 auto-generates renewal proposals, routes for legal and finance sign-off, and tracks signature",
+    "data_sources": [
+      "contracts_domain",
+      "crm_domain",
+      "finance_domain"
+    ],
+    "stakeholders": [
+      "sales team",
+      "finance",
+      "legal"
+    ],
+    "status": "live",
+    "owner": "Sales Operations",
+    "tags": [
+      "contract",
+      "renewal",
+      "90-day",
+      "legal",
+      "sign-off",
+      "CRM",
+      "sales"
+    ]
+  },
+  {
+    "asset_id": "workflow_008",
+    "name": "Budget Reforecast Approval Workflow",
+    "type": "workflow_automation",
+    "domain": [
+      "finance"
+    ],
+    "description": "Quarterly reforecast submission and approval workflow across departments with variance commentary and CFO sign-off",
+    "data_sources": [
+      "finance_domain",
+      "planning_domain"
+    ],
+    "stakeholders": [
+      "finance",
+      "management",
+      "executives"
+    ],
+    "status": "live",
+    "owner": "Finance",
+    "tags": [
+      "budget",
+      "reforecast",
+      "quarterly",
+      "variance",
+      "CFO",
+      "approval",
+      "planning"
+    ]
+  },
+  {
+    "asset_id": "dash_013",
+    "name": "Engineering Delivery Metrics Dashboard",
+    "type": "interactive_dashboard",
+    "domain": [
+      "engineering",
+      "product"
+    ],
+    "description": "DORA metrics dashboard tracking deployment frequency, lead time, MTTR, and change failure rate by squad",
+    "data_sources": [
+      "engineering_domain",
+      "product_domain"
+    ],
+    "stakeholders": [
+      "engineering",
+      "product managers",
+      "management"
+    ],
+    "status": "live",
+    "owner": "Engineering",
+    "tags": [
+      "DORA",
+      "deployment",
+      "lead time",
+      "MTTR",
+      "change failure",
+      "engineering",
+      "squad"
+    ]
+  },
+  {
+    "asset_id": "dash_014",
+    "name": "Customer Support SLA Dashboard",
+    "type": "interactive_dashboard",
+    "domain": [
+      "operations",
+      "customer"
+    ],
+    "description": "Real-time SLA compliance tracking by channel, tier, and agent with breach prediction and queue management",
+    "data_sources": [
+      "support_domain",
+      "customer_domain"
+    ],
+    "stakeholders": [
+      "customer success",
+      "operations team",
+      "management"
+    ],
+    "status": "live",
+    "owner": "Customer Operations",
+    "tags": [
+      "SLA",
+      "support",
+      "channel",
+      "tier",
+      "breach",
+      "queue",
+      "real-time"
+    ]
+  },
+  {
+    "asset_id": "dash_015",
+    "name": "Financial Risk Heatmap Dashboard",
+    "type": "interactive_dashboard",
+    "domain": [
+      "risk",
+      "finance"
+    ],
+    "description": "Interactive risk heatmap across credit, liquidity, market, and operational risk dimensions with scenario modelling",
+    "data_sources": [
+      "risk_domain",
+      "finance_domain"
+    ],
+    "stakeholders": [
+      "risk",
+      "executives",
+      "compliance"
+    ],
+    "status": "live",
+    "owner": "Risk Analytics",
+    "tags": [
+      "risk",
+      "heatmap",
+      "credit",
+      "liquidity",
+      "market",
+      "scenario",
+      "operational"
+    ]
+  },
+  {
+    "asset_id": "report_009",
+    "name": "Monthly Margin Analysis Report",
+    "type": "reporting_output",
+    "domain": [
+      "finance",
+      "product"
+    ],
+    "description": "Product and channel-level gross and contribution margin analysis vs prior year and budget with waterfall breakdown",
+    "data_sources": [
+      "finance_domain",
+      "product_domain"
+    ],
+    "stakeholders": [
+      "finance",
+      "product managers",
+      "leadership"
+    ],
+    "status": "live",
+    "owner": "Finance Analytics",
+    "tags": [
+      "margin",
+      "gross margin",
+      "contribution margin",
+      "waterfall",
+      "product",
+      "monthly"
+    ]
+  },
+  {
+    "asset_id": "report_010",
+    "name": "Customer Health Score Report",
+    "type": "reporting_output",
+    "domain": [
+      "customer",
+      "product"
+    ],
+    "description": "Monthly aggregated customer health scores by segment with early warning flags and recommended actions",
+    "data_sources": [
+      "customer_domain",
+      "product_usage_domain",
+      "support_domain"
+    ],
+    "stakeholders": [
+      "customer success",
+      "product managers",
+      "management"
+    ],
+    "status": "live",
+    "owner": "Customer Analytics",
+    "tags": [
+      "health score",
+      "customer",
+      "early warning",
+      "segment",
+      "monthly",
+      "actions"
+    ]
+  },
+  {
+    "asset_id": "pipeline_011",
+    "name": "Regulatory Data Submission Pipeline",
+    "type": "data_pipeline",
+    "domain": [
+      "compliance",
+      "finance"
+    ],
+    "description": "Automated extraction, validation, and submission pipeline for regulatory filings with reconciliation and sign-off gate",
+    "data_sources": [
+      "finance_domain",
+      "risk_domain",
+      "compliance_domain"
+    ],
+    "stakeholders": [
+      "compliance",
+      "finance",
+      "auditors"
+    ],
+    "status": "live",
+    "owner": "Compliance",
+    "tags": [
+      "regulatory",
+      "submission",
+      "validation",
+      "reconciliation",
+      "sign-off",
+      "compliance"
+    ]
+  },
+  {
+    "asset_id": "pipeline_012",
+    "name": "Social Listening Data Pipeline",
+    "type": "data_pipeline",
+    "domain": [
+      "marketing",
+      "analytics"
+    ],
+    "description": "Pipeline ingesting social media mentions, sentiment scores, and topic clusters from Twitter, LinkedIn, and review platforms",
+    "data_sources": [
+      "twitter_api",
+      "linkedin_api",
+      "review_platform_api"
+    ],
+    "stakeholders": [
+      "marketing team",
+      "analytics team",
+      "product managers"
+    ],
+    "status": "live",
+    "owner": "Marketing Analytics",
+    "tags": [
+      "social listening",
+      "sentiment",
+      "mentions",
+      "Twitter",
+      "LinkedIn",
+      "NLP"
+    ]
+  },
+  {
+    "asset_id": "extract_008",
+    "name": "Campaign Response Extract",
+    "type": "structured_extract",
+    "domain": [
+      "marketing"
+    ],
+    "description": "Post-campaign response extract capturing opens, clicks, conversions, and unsubscribes by customer and message variant",
+    "data_sources": [
+      "marketing_domain",
+      "customer_domain"
+    ],
+    "stakeholders": [
+      "marketing team",
+      "analytics team"
+    ],
+    "status": "live",
+    "owner": "Marketing Analytics",
+    "tags": [
+      "campaign",
+      "response",
+      "opens",
+      "clicks",
+      "conversions",
+      "unsubscribes",
+      "extract"
+    ]
+  },
+  {
+    "asset_id": "view_008",
+    "name": "Consolidated Customer Profitability View",
+    "type": "data_view",
+    "domain": [
+      "finance",
+      "customer"
+    ],
+    "description": "Governed view of customer-level profitability combining revenue, cost to serve, acquisition cost, and lifetime contribution",
+    "data_sources": [
+      "finance_domain",
+      "customer_domain",
+      "operations_domain"
+    ],
+    "stakeholders": [
+      "finance",
+      "analytics team",
+      "leadership"
+    ],
+    "status": "live",
+    "owner": "Finance Analytics",
+    "tags": [
+      "profitability",
+      "customer",
+      "cost to serve",
+      "lifetime",
+      "contribution",
+      "view"
+    ]
+  },
+  {
+    "asset_id": "model_009",
+    "name": "Price Elasticity Model",
+    "type": "analytical_model",
+    "domain": [
+      "product",
+      "finance"
+    ],
+    "description": "Econometric model estimating price elasticity by product category and customer segment for pricing strategy support",
+    "data_sources": [
+      "transaction_domain",
+      "product_domain",
+      "customer_domain"
+    ],
+    "stakeholders": [
+      "product managers",
+      "finance",
+      "analytics team"
+    ],
+    "status": "live",
+    "owner": "Product Analytics",
+    "tags": [
+      "price elasticity",
+      "pricing",
+      "econometric",
+      "category",
+      "segment",
+      "strategy"
+    ]
+  },
+  {
+    "asset_id": "model_010",
+    "name": "Customer Segmentation Clustering Model",
+    "type": "analytical_model",
+    "domain": [
+      "customer",
+      "analytics"
+    ],
+    "description": "K-means clustering model producing 8 behavioural customer segments refreshed weekly \u2014 feeds campaign targeting and product personalisation",
+    "data_sources": [
+      "customer_domain",
+      "product_usage_domain",
+      "transaction_domain"
+    ],
+    "stakeholders": [
+      "analytics team",
+      "marketing team",
+      "product managers"
+    ],
+    "status": "live",
+    "owner": "Customer Analytics",
+    "tags": [
+      "segmentation",
+      "clustering",
+      "K-means",
+      "8-segment",
+      "behavioural",
+      "targeting"
+    ]
+  },
+  {
+    "asset_id": "workflow_009",
+    "name": "Data Stewardship Review Workflow",
+    "type": "workflow_automation",
+    "domain": [
+      "data governance"
+    ],
+    "description": "Quarterly workflow assigning domain datasets to stewards for completeness, accuracy, and lineage review with sign-off tracking",
+    "data_sources": [
+      "metadata_domain",
+      "dq_monitoring_domain"
+    ],
+    "stakeholders": [
+      "data stewards",
+      "data team",
+      "compliance"
+    ],
+    "status": "live",
+    "owner": "Data Governance",
+    "tags": [
+      "stewardship",
+      "review",
+      "quarterly",
+      "lineage",
+      "sign-off",
+      "governance",
+      "accuracy"
+    ]
+  },
+  {
+    "asset_id": "dash_016",
+    "name": "Product Revenue Breakdown Dashboard",
+    "type": "interactive_dashboard",
+    "domain": [
+      "finance",
+      "product"
+    ],
+    "description": "Revenue decomposition dashboard by product line, pricing tier, geography, and customer segment with drill-down to account level",
+    "data_sources": [
+      "finance_domain",
+      "product_domain",
+      "customer_domain"
+    ],
+    "stakeholders": [
+      "leadership",
+      "finance",
+      "product managers"
+    ],
+    "status": "live",
+    "owner": "Finance Analytics",
+    "tags": [
+      "revenue",
+      "breakdown",
+      "product line",
+      "geography",
+      "segment",
+      "drill-down"
+    ]
+  },
+  {
+    "asset_id": "dash_017",
+    "name": "Customer Acquisition Funnel Dashboard",
+    "type": "interactive_dashboard",
+    "domain": [
+      "marketing",
+      "sales"
+    ],
+    "description": "Full funnel visibility from first touch through MQL, SQL, opportunity, and closed-won with conversion rates at each stage",
+    "data_sources": [
+      "marketing_domain",
+      "crm_domain"
+    ],
+    "stakeholders": [
+      "marketing team",
+      "sales team",
+      "leadership"
+    ],
+    "status": "live",
+    "owner": "Marketing Analytics",
+    "tags": [
+      "acquisition",
+      "funnel",
+      "MQL",
+      "SQL",
+      "conversion",
+      "pipeline",
+      "marketing"
+    ]
+  },
+  {
+    "asset_id": "report_011",
+    "name": "Supplier Performance Report",
+    "type": "reporting_output",
+    "domain": [
+      "supply chain",
+      "operations"
+    ],
+    "description": "Quarterly supplier scorecard covering on-time delivery, quality defect rates, lead time adherence, and contract compliance",
+    "data_sources": [
+      "supplier_domain",
+      "supply_chain_domain"
+    ],
+    "stakeholders": [
+      "procurement",
+      "operations team",
+      "management"
+    ],
+    "status": "live",
+    "owner": "Supply Chain",
+    "tags": [
+      "supplier",
+      "scorecard",
+      "on-time",
+      "delivery",
+      "defect",
+      "lead time",
+      "quarterly"
+    ]
+  },
+  {
+    "asset_id": "pipeline_013",
+    "name": "Customer Feedback Ingestion Pipeline",
+    "type": "data_pipeline",
+    "domain": [
+      "customer",
+      "analytics"
+    ],
+    "description": "Pipeline collecting survey responses, in-app feedback, and review platform data, applying NLP classification and routing to the customer domain",
+    "data_sources": [
+      "survey_platform_api",
+      "in_app_feedback_api",
+      "review_platform_api"
+    ],
+    "stakeholders": [
+      "customer success",
+      "product managers",
+      "analytics team"
+    ],
+    "status": "live",
+    "owner": "Customer Analytics",
+    "tags": [
+      "feedback",
+      "NLP",
+      "survey",
+      "in-app",
+      "reviews",
+      "classification",
+      "customer"
+    ]
+  },
+  {
+    "asset_id": "integration_009",
+    "name": "Product Analytics to CRM Sync",
+    "type": "integration_request",
+    "domain": [
+      "product",
+      "sales"
+    ],
+    "description": "Daily sync of product usage scores and health signals from the analytics platform into CRM account records for sales context",
+    "data_sources": [
+      "product_usage_domain",
+      "crm_domain"
+    ],
+    "stakeholders": [
+      "sales team",
+      "customer success",
+      "product managers"
+    ],
+    "status": "live",
+    "owner": "Sales Operations",
+    "tags": [
+      "product usage",
+      "health",
+      "CRM",
+      "sync",
+      "daily",
+      "sales context",
+      "signals"
+    ]
+  },
+  {
+    "asset_id": "extract_009",
+    "name": "Regulatory Capital Extract",
+    "type": "structured_extract",
+    "domain": [
+      "compliance",
+      "finance"
+    ],
+    "description": "Certified daily extract of capital adequacy inputs \u2014 risk-weighted assets, Tier 1/2 capital, and leverage ratios",
+    "data_sources": [
+      "finance_domain",
+      "risk_domain"
+    ],
+    "stakeholders": [
+      "compliance",
+      "finance",
+      "auditors"
+    ],
+    "status": "live",
+    "owner": "Compliance",
+    "tags": [
+      "capital",
+      "adequacy",
+      "Tier 1",
+      "Tier 2",
+      "leverage",
+      "regulatory",
+      "daily"
+    ]
+  },
+  {
+    "asset_id": "view_009",
+    "name": "Revenue by Channel View",
+    "type": "data_view",
+    "domain": [
+      "finance",
+      "sales"
+    ],
+    "description": "Certified view decomposing recognised revenue by sales channel, motion, and contract type with MRR and ARR derived metrics",
+    "data_sources": [
+      "finance_domain",
+      "crm_domain",
+      "contracts_domain"
+    ],
+    "stakeholders": [
+      "finance",
+      "sales team",
+      "analytics team"
+    ],
+    "status": "live",
+    "owner": "Finance",
+    "tags": [
+      "revenue",
+      "channel",
+      "MRR",
+      "ARR",
+      "contract",
+      "sales motion",
+      "view"
+    ]
+  },
+  {
+    "asset_id": "model_011",
+    "name": "Campaign Response Propensity Model",
+    "type": "analytical_model",
+    "domain": [
+      "marketing",
+      "analytics"
+    ],
+    "description": "Binary classifier predicting likelihood of campaign response by message type and customer profile \u2014 feeds email and push targeting",
+    "data_sources": [
+      "customer_domain",
+      "marketing_domain"
+    ],
+    "stakeholders": [
+      "marketing team",
+      "analytics team"
+    ],
+    "status": "live",
+    "owner": "Marketing Analytics",
+    "tags": [
+      "campaign",
+      "propensity",
+      "response",
+      "email",
+      "push",
+      "targeting",
+      "binary classifier"
+    ]
+  },
+  {
+    "asset_id": "workflow_010",
+    "name": "Finance Month-End Close Workflow",
+    "type": "workflow_automation",
+    "domain": [
+      "finance"
+    ],
+    "description": "Structured month-end close checklist workflow \u2014 coordinates journal entry deadlines, reconciliation sign-offs, and CFO certification",
+    "data_sources": [
+      "finance_domain",
+      "planning_domain"
+    ],
+    "stakeholders": [
+      "finance",
+      "executives"
+    ],
+    "status": "live",
+    "owner": "Finance",
+    "tags": [
+      "month-end",
+      "close",
+      "journal entry",
+      "reconciliation",
+      "CFO",
+      "certification",
+      "finance"
+    ]
+  },
+  {
+    "asset_id": "dash_018",
+    "name": "Net Revenue Retention Dashboard",
+    "type": "interactive_dashboard",
+    "domain": [
+      "finance",
+      "customer"
+    ],
+    "description": "NRR and GRR waterfall dashboard showing expansion, contraction, and churn contributions by cohort, segment, and product",
+    "data_sources": [
+      "finance_domain",
+      "customer_domain",
+      "contracts_domain"
+    ],
+    "stakeholders": [
+      "finance",
+      "leadership",
+      "customer success"
+    ],
+    "status": "live",
+    "owner": "Finance Analytics",
+    "tags": [
+      "NRR",
+      "GRR",
+      "net revenue retention",
+      "expansion",
+      "contraction",
+      "churn",
+      "waterfall"
+    ]
+  },
+  {
+    "asset_id": "pipeline_014",
+    "name": "Contract Lifecycle Management Pipeline",
+    "type": "data_pipeline",
+    "domain": [
+      "legal",
+      "finance",
+      "sales"
+    ],
+    "description": "Pipeline extracting contract terms, renewal dates, value, and status from the CLM platform into the contracts domain",
+    "data_sources": [
+      "clm_platform_api",
+      "crm_domain"
+    ],
+    "stakeholders": [
+      "legal",
+      "finance",
+      "sales team"
+    ],
+    "status": "live",
+    "owner": "Sales Operations",
+    "tags": [
+      "contract",
+      "CLM",
+      "renewal",
+      "terms",
+      "value",
+      "lifecycle",
+      "legal"
+    ]
+  },
+  {
+    "asset_id": "extract_010",
+    "name": "Product Usage Metrics Extract",
+    "type": "structured_extract",
+    "domain": [
+      "product",
+      "customer"
+    ],
+    "description": "Weekly extract of product usage KPIs per customer \u2014 DAU, WAU, feature adoption depth, and session duration",
+    "data_sources": [
+      "product_usage_domain",
+      "customer_domain"
+    ],
+    "stakeholders": [
+      "product managers",
+      "customer success",
+      "analytics team"
+    ],
+    "status": "live",
+    "owner": "Product Analytics",
+    "tags": [
+      "product usage",
+      "DAU",
+      "WAU",
+      "adoption",
+      "session",
+      "weekly",
+      "KPI"
+    ]
+  },
+  {
+    "asset_id": "view_010",
+    "name": "Operational Cost Breakdown View",
+    "type": "data_view",
+    "domain": [
+      "finance",
+      "operations"
+    ],
+    "description": "Granular operational cost view by cost category, department, vendor, and project aligned to P&L structure",
+    "data_sources": [
+      "finance_domain",
+      "operations_domain"
+    ],
+    "stakeholders": [
+      "finance",
+      "management",
+      "operations team"
+    ],
+    "status": "live",
+    "owner": "Finance",
+    "tags": [
+      "operational cost",
+      "breakdown",
+      "department",
+      "vendor",
+      "P&L",
+      "project"
+    ]
+  },
+  {
+    "asset_id": "report_012",
+    "name": "Product Roadmap Progress Report",
+    "type": "reporting_output",
+    "domain": [
+      "product",
+      "engineering"
+    ],
+    "description": "Monthly roadmap delivery tracking \u2014 planned vs actual milestone completion, risk flags, and dependency status",
+    "data_sources": [
+      "engineering_domain",
+      "product_domain"
+    ],
+    "stakeholders": [
+      "product managers",
+      "management",
+      "executives"
+    ],
+    "status": "live",
+    "owner": "Product",
+    "tags": [
+      "roadmap",
+      "milestones",
+      "delivery",
+      "risk",
+      "dependencies",
+      "monthly",
+      "product"
+    ]
+  },
+  {
+    "asset_id": "integration_010",
+    "name": "Billing System to Revenue Recognition Integration",
+    "type": "integration_request",
+    "domain": [
+      "finance",
+      "operations"
+    ],
+    "description": "Automated integration from billing system to revenue recognition engine, mapping invoices to performance obligations",
+    "data_sources": [
+      "billing_domain",
+      "contracts_domain"
+    ],
+    "stakeholders": [
+      "finance",
+      "auditors"
+    ],
+    "status": "live",
+    "owner": "Finance",
+    "tags": [
+      "billing",
+      "revenue recognition",
+      "invoice",
+      "performance obligations",
+      "ASC 606",
+      "automated"
+    ]
+  },
+  {
+    "asset_id": "dash_019",
+    "name": "Profitability by Region Dashboard",
+    "type": "interactive_dashboard",
+    "domain": [
+      "finance",
+      "operations"
+    ],
+    "description": "Regional P&L dashboard showing revenue, cost, and margin contribution by geography with YoY and budget variance",
+    "data_sources": [
+      "finance_domain",
+      "operations_domain"
+    ],
+    "stakeholders": [
+      "leadership",
+      "finance",
+      "management"
+    ],
+    "status": "live",
+    "owner": "Finance Analytics",
+    "tags": [
+      "profitability",
+      "region",
+      "P&L",
+      "geography",
+      "margin",
+      "variance"
+    ]
+  },
+  {
+    "asset_id": "report_013",
+    "name": "Data Lineage Audit Report",
+    "type": "reporting_output",
+    "domain": [
+      "data governance",
+      "compliance"
+    ],
+    "description": "Quarterly audit report mapping data lineage from source to consumer for all certified data assets",
+    "data_sources": [
+      "metadata_domain",
+      "dq_monitoring_domain"
+    ],
+    "stakeholders": [
+      "data stewards",
+      "auditors",
+      "compliance"
+    ],
+    "status": "live",
+    "owner": "Data Governance",
+    "tags": [
+      "lineage",
+      "audit",
+      "certified",
+      "source",
+      "consumer",
+      "quarterly",
+      "governance"
+    ]
+  },
+  {
+    "asset_id": "pipeline_015",
+    "name": "Account Health Score Pipeline",
+    "type": "data_pipeline",
+    "domain": [
+      "customer",
+      "analytics"
+    ],
+    "description": "Weekly pipeline computing composite account health scores from usage, support, billing, and engagement signals",
+    "data_sources": [
+      "product_usage_domain",
+      "support_domain",
+      "billing_domain",
+      "engagement_domain"
+    ],
+    "stakeholders": [
+      "customer success",
+      "sales team",
+      "analytics team"
+    ],
+    "status": "live",
+    "owner": "Customer Analytics",
+    "tags": [
+      "health score",
+      "account",
+      "composite",
+      "usage",
+      "engagement",
+      "weekly",
+      "billing"
+    ]
+  },
+  {
+    "asset_id": "model_012",
+    "name": "Market Basket Analysis Model",
+    "type": "analytical_model",
+    "domain": [
+      "product",
+      "customer"
+    ],
+    "description": "Association rules model identifying frequently co-purchased product combinations for cross-sell recommendation and bundling strategy",
+    "data_sources": [
+      "transaction_domain",
+      "product_domain"
+    ],
+    "stakeholders": [
+      "product managers",
+      "marketing team",
+      "sales team"
+    ],
+    "status": "live",
+    "owner": "Product Analytics",
+    "tags": [
+      "market basket",
+      "association rules",
+      "cross-sell",
+      "bundling",
+      "co-purchase",
+      "product"
+    ]
+  },
+  {
+    "asset_id": "workflow_011",
+    "name": "Regulatory Change Impact Workflow",
+    "type": "workflow_automation",
+    "domain": [
+      "compliance",
+      "data governance"
+    ],
+    "description": "Workflow triggered by regulatory change notices \u2014 identifies impacted assets, assigns review tasks to stewards, tracks sign-off",
+    "data_sources": [
+      "compliance_domain",
+      "metadata_domain"
+    ],
+    "stakeholders": [
+      "compliance",
+      "data stewards",
+      "executives"
+    ],
+    "status": "live",
+    "owner": "Compliance",
+    "tags": [
+      "regulatory change",
+      "impact",
+      "review",
+      "steward",
+      "sign-off",
+      "compliance",
+      "assets"
+    ]
+  }
+]
