@@ -89,9 +89,37 @@ def build_ba_payload(
     }
  
  
-def start_requirement_flow(user_input: str) -> Dict:
+def start_requirement_flow(
+    user_input: str,
+    shape_result: Optional[Dict] = None,
+) -> Dict:
+    """
+    Start a new BA requirement session.
+ 
+    shape_result — optional shape dict from the Meaning Agent. When provided
+    it is stored on the session so downstream components (decision engine,
+    artifact service) can use the pre-resolved category without re-classifying
+    from the raw request string.
+ 
+    Expected shape_result keys (all optional, missing keys are silently ignored):
+      resolved_category  — subtype string e.g. "interactive_dashboard"
+      resolved_label     — human label e.g. "dashboard requirement"
+      confidence         — float 0.0–1.0
+      is_locked          — bool
+      method             — classification method string
+    """
     session_id = create_session_id()
     requirement_state = initialize_requirement_state(user_input)
+ 
+    # If the Meaning Agent resolved a shape, store it on the requirement_state
+    # so the decision engine and question strategy service can use the locked
+    # category from the very first turn rather than re-classifying from text.
+    if shape_result:
+        requirement_state["_shape_result"] = shape_result
+        resolved_category = shape_result.get("resolved_category")
+        if resolved_category:
+            requirement_state["_resolved_request_type"] = resolved_category
+ 
     decision = decide_next_step(requirement_state)
  
     initial_feedback = build_clarification_feedback(
@@ -108,6 +136,7 @@ def start_requirement_flow(user_input: str) -> Dict:
         "stage": "clarification",
         "requirement_state": requirement_state,
         "current_field": decision["question_field"],
+        "shape_result": shape_result,
         "requirement_document": None,
         "delivery_artifacts": None,
         "execution_package": None,
@@ -125,10 +154,18 @@ def start_requirement_flow(user_input: str) -> Dict:
     )
     SESSION_STORE[session_id]["latest_ba_result"] = ba_payload
  
+    # Build a shape-aware opening message so the user knows the system
+    # understood their request type from the start.
+    if shape_result and shape_result.get("resolved_label"):
+        label = shape_result["resolved_label"]
+        message = f"I've identified this as a {label}. Let me shape it into a structured requirement."
+    else:
+        message = "I've started shaping this request into a structured requirement package."
+ 
     return {
         "mode": "REQUIREMENT",
         "status": "CLARIFICATION_REQUIRED",
-        "message": "I've started shaping this request into a structured requirement package.",
+        "message": message,
         "session_id": session_id,
         "question_result": None,
         "ba_result": ba_payload,
