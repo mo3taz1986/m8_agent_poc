@@ -73,6 +73,26 @@ CONTEXT_SIGNALS = (
     "from the doc",
     "from the document",
     "from our architecture",
+    # Policy and governance document references — questions like
+    # "what are the data quality requirements in the policy?" should
+    # route to context retrieval, not concept mode.
+    "in the policy",
+    "the policy",
+    "the policy document",
+    "per the policy",
+    "according to the policy",
+    "policy say",
+    "policy mention",
+    "policy require",
+    "policy state",
+    "policy cover",
+    "does the policy",
+    "what does the policy",
+    "retention policy",
+    "access policy",
+    "quality policy",
+    "data policy",
+    "governance policy",
 )
 
 # Stakeholder subjects — business roles/groups that express needs on behalf of others.
@@ -378,7 +398,17 @@ class LeaderAgent:
                 metadata_agent=self._metadata_agent,
             )
 
-        answer_result = ask_question(question=original_request, top_k=top_k, mode="CONCEPT")
+        # Use CONTEXT mode, not CONCEPT — the ambiguity gate already handled
+        # intent clarification. CONCEPT bypasses retrieval and answers freely
+        # from LLM knowledge, which produces hallucinated answers for
+        # governance questions not in the corpus. CONTEXT runs retrieval,
+        # checks sufficiency, and refuses cleanly when evidence is absent.
+        answer_result = ask_question(
+            question=original_request,
+            top_k=top_k,
+            mode="CONTEXT",
+            context_agent=self._context_agent,
+        )
         return {
             "mode": "QUESTION",
             "status": "COMPLETED",
