@@ -9,14 +9,11 @@ from dotenv import load_dotenv
 from src.config import (
     ROOT_DIR,
     CLAUDE_MODEL_NAME,
-    MAX_CONTEXT_CHUNKS,
-    MIN_HYBRID_SCORE_TO_ANSWER,
-    MIN_RERANK_SCORE_TO_ANSWER,
     ENABLE_GROUNDING_CHECK,
     MIN_GROUNDING_SCORE_TO_ACCEPT,
 )
 from src.grounding_check import verify_grounding
-from src.hybrid_retriever import retrieve_hybrid_chunks
+from src.agents.context_agent import ContextAgent
 from src.services.concept_answer_service import answer_concept_question
 from src.services.question_fallback_service import (
     answer_basic_definition,
@@ -32,14 +29,16 @@ if not api_key:
 
 client = Anthropic(api_key=api_key)
 
+# Module-level ContextAgent instance — stateless, safe to share.
+# answer_service owns the LLM answering layer; ContextAgent owns retrieval.
+_context_agent = ContextAgent()
+
 
 def compute_confidence(answered: bool, grounding_score: float | None) -> str:
     if not answered:
         return "low"
-
     if grounding_score is None:
         return "medium"
-
     if grounding_score >= 0.60:
         return "high"
     if grounding_score >= 0.30:
@@ -47,66 +46,13 @@ def compute_confidence(answered: bool, grounding_score: float | None) -> str:
     return "low"
 
 
-def map_sources(retrieved_chunks: List[Dict]) -> List[Dict]:
-    sources: List[Dict] = []
+def ask_context_llm(question: str, context_string: str) -> str:
+    """
+    Generate a grounded answer from the pre-built context string.
 
-    for chunk in retrieved_chunks:
-        sources.append(
-            {
-                "doc_name": chunk.get("doc_name", "unknown"),
-                "chunk_id": chunk.get("chunk_id", -1),
-                "section_title": chunk.get("section_title", "General"),
-                "text": chunk.get("text", ""),
-                "hybrid_score": chunk.get("hybrid_score"),
-                "rerank_score": chunk.get("rerank_score"),
-            }
-        )
-
-    return sources
-
-
-def build_context(retrieved_chunks: List[Dict], max_chunks: int = MAX_CONTEXT_CHUNKS) -> str:
-    selected_chunks = retrieved_chunks[:max_chunks]
-
-    context_parts = []
-    for chunk in selected_chunks:
-        context_parts.append(
-            (
-                f"Source: {chunk.get('doc_name', 'unknown')} | "
-                f"Section: {chunk.get('section_title', 'General')} | "
-                f"Section ID: {chunk.get('section_id', 0)} | "
-                f"Chunk ID: {chunk.get('chunk_id', -1)} | "
-                f"Semantic Score: {float(chunk.get('semantic_score', 0.0)):.4f} | "
-                f"Keyword Score: {float(chunk.get('keyword_score', 0.0)):.4f} | "
-                f"Hybrid Score: {float(chunk.get('hybrid_score', 0.0)):.4f} | "
-                f"Rerank Score: {float(chunk.get('rerank_score', 0.0)):.4f}\\n"
-                f"{chunk.get('text', '')}"
-            )
-        )
-
-    return "\\n\\n".join(context_parts)
-
-
-def should_answer(retrieved_chunks: List[Dict]) -> bool:
-    if not retrieved_chunks:
-        return False
-
-    top_chunk = retrieved_chunks[0]
-    top_hybrid_score = float(top_chunk.get("hybrid_score", 0.0))
-    top_rerank_score = float(top_chunk.get("rerank_score", 0.0))
-
-    if top_hybrid_score < MIN_HYBRID_SCORE_TO_ANSWER:
-        return False
-
-    if top_rerank_score < MIN_RERANK_SCORE_TO_ANSWER:
-        return False
-
-    return True
-
-
-def ask_context_llm(question: str, retrieved_chunks: List[Dict]) -> str:
-    context = build_context(retrieved_chunks)
-
+    Accepts context_string directly (built by ContextAgent) rather than
+    raw chunks — answer_service no longer knows about chunk structure.
+    """
     prompt = f"""
 You are a governance and policy assistant.
 
@@ -123,7 +69,7 @@ I do not have enough evidence from the retrieved context.
 9. Do not invent policy owners, timelines, controls, or actions that are not in the context.
 
 Retrieved context:
-{context}
+{context_string}
 
 Question:
 {question}
@@ -140,83 +86,105 @@ Question:
 
 def _answer_in_concept_mode(question: str) -> Dict:
     concept_result = answer_concept_question(question)
-
     if concept_result.get("answered"):
         return concept_result
-
     return answer_basic_definition(question)
 
 
-def _answer_in_context_mode(question: str, top_k: int) -> Dict:
-    retrieved_chunks = retrieve_hybrid_chunks(question)
-    sources = map_sources(retrieved_chunks[:top_k])
+def _answer_in_context_mode(
+    question: str,
+    top_k: int,
+    context_agent: Optional[ContextAgent] = None,
+) -> Dict:
+    """
+    Answer a question using retrieved context.
 
-    if not should_answer(retrieved_chunks):
-        fallback_result = build_partial_answer_with_guidance(question)
-        fallback_result["sources"] = sources
-        fallback_result["mode"] = "CONTEXT"
-        fallback_result["grounding"] = {
-            "score": 1.0,
-            "verdict": "refused_pre_answer",
+    context_agent — optional pre-instantiated ContextAgent. When provided
+    (e.g. passed in from the Leader via graph state) it is used directly.
+    Falls back to the module-level instance when not provided, preserving
+    full backwards compatibility with existing callers.
+    """
+    agent = context_agent or _context_agent
+    ctx = agent.retrieve(question, top_k=top_k)
+
+    sources = ctx["sources"]
+
+    if not ctx["sufficient"]:
+        fallback = build_partial_answer_with_guidance(question)
+        fallback["sources"] = sources
+        fallback["mode"]    = "CONTEXT"
+        fallback["grounding"] = {
+            "score":   None,
+            "verdict": "refused_pre_retrieval"
+                       if ctx["retrieval_quality"] == "empty"
+                       else "refused_low_retrieval_quality",
         }
-        return fallback_result
+        return fallback
 
-    answer_text = ask_context_llm(question, retrieved_chunks)
+    answer_text = ask_context_llm(question, ctx["context_string"])
 
     if ENABLE_GROUNDING_CHECK:
         grounding_result = verify_grounding(
             answer=answer_text,
-            retrieved_chunks=retrieved_chunks,
+            retrieved_chunks=ctx["chunks"],
             min_grounding_score=MIN_GROUNDING_SCORE_TO_ACCEPT,
         )
     else:
         grounding_result = {
-            "grounding_score": None,
+            "grounding_score":   None,
             "grounding_verdict": "disabled",
-            "grounded": True,
+            "grounded":          True,
         }
 
     answered = bool(answer_text.strip()) and bool(grounding_result.get("grounded", True))
 
     if not answered:
-        fallback_result = build_partial_answer_with_guidance(question)
-        fallback_result["sources"] = sources
-        fallback_result["mode"] = "CONTEXT"
-        fallback_result["grounding"] = {
-            "score": grounding_result.get("grounding_score"),
+        fallback = build_partial_answer_with_guidance(question)
+        fallback["sources"] = sources
+        fallback["mode"]    = "CONTEXT"
+        fallback["grounding"] = {
+            "score":   grounding_result.get("grounding_score"),
             "verdict": grounding_result.get("grounding_verdict", "unknown"),
         }
-        return fallback_result
+        return fallback
 
     return {
-        "answer": answer_text,
-        "answered": True,
-        "confidence": compute_confidence(
-            True,
-            grounding_result.get("grounding_score"),
-        ),
+        "answer":    answer_text,
+        "answered":  True,
+        "confidence": compute_confidence(True, grounding_result.get("grounding_score")),
         "grounding": {
-            "score": grounding_result.get("grounding_score"),
+            "score":   grounding_result.get("grounding_score"),
             "verdict": grounding_result.get("grounding_verdict", "unknown"),
         },
-        "sources": sources,
-        "used_fallback": False,
+        "sources":            sources,
+        "used_fallback":      False,
         "needs_clarification": False,
-        "mode": "CONTEXT",
+        "mode":               "CONTEXT",
     }
 
 
-def ask_question(question: str, top_k: int = 4, mode: Optional[str] = None) -> Dict:
-    normalized = (question or "").strip()
-    active_mode = (mode or "").upper()
+def ask_question(
+    question: str,
+    top_k: int = 4,
+    mode: Optional[str] = None,
+    context_agent: Optional[ContextAgent] = None,
+) -> Dict:
+    """
+    Main public entry point for the Q&A pipeline.
+
+    context_agent — optional ContextAgent instance injected by the Leader.
+    When omitted the module-level instance is used (backwards compatible).
+    """
+    normalized   = (question or "").strip()
+    active_mode  = (mode or "").upper()
 
     if active_mode == "CONCEPT":
         return _answer_in_concept_mode(normalized)
 
     if active_mode == "CONTEXT":
-        return _answer_in_context_mode(normalized, top_k=top_k)
+        return _answer_in_context_mode(normalized, top_k=top_k, context_agent=context_agent)
 
     if is_basic_definition_question(normalized):
         return _answer_in_concept_mode(normalized)
 
-    return _answer_in_context_mode(normalized, top_k=top_k)
+    return _answer_in_context_mode(normalized, top_k=top_k, context_agent=context_agent)
