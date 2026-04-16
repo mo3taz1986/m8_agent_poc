@@ -20,6 +20,7 @@ from src.services.ambiguity_resolution_service import (
 )
 from src.services.meaning_agent import MeaningAgent
 from src.agents.metadata_agent import MetadataAgent
+from src.agents.context_agent import ContextAgent
 from src.graph.orchestration_graph import build_orchestration_graph
 
 PENDING_INTENT_STORE: Dict[str, Dict] = {}
@@ -271,6 +272,9 @@ class LeaderAgent:
         # Metadata Agent validates against the enterprise asset store.
         # Also stateless — safe to share.
         self._metadata_agent = MetadataAgent()
+        # Context Agent owns retrieval — injected into graph state so
+        # question_node can call it without going through answer_service.
+        self._context_agent = ContextAgent()
 
     def handle_input(
         self,
@@ -322,6 +326,7 @@ class LeaderAgent:
             # can call it without re-instantiating.
             "meaning_agent": self._meaning_agent,
             "metadata_agent": self._metadata_agent,
+            "context_agent": self._context_agent,
             "response": None,
         }
         result = self.graph.invoke(state)
@@ -397,6 +402,8 @@ def question_node(state: Dict) -> Dict:
     mode = _decide_mode_from_input(user_input)
     state["preclassified_mode"] = mode
 
+    context_agent: ContextAgent = state.get("context_agent") or ContextAgent()
+
     if mode == "CONCEPT":
         answer_result = ask_question(question=user_input, top_k=top_k, mode="CONCEPT")
         state["response"] = {
@@ -411,7 +418,10 @@ def question_node(state: Dict) -> Dict:
         return state
 
     if mode == "CONTEXT":
-        answer_result = ask_question(question=user_input, top_k=top_k, mode="CONTEXT")
+        answer_result = ask_question(
+            question=user_input, top_k=top_k, mode="CONTEXT",
+            context_agent=context_agent,
+        )
         state["response"] = {
             "mode": "QUESTION",
             "status": "COMPLETED",
@@ -439,7 +449,10 @@ def question_node(state: Dict) -> Dict:
     state["intent_result"] = intent_result
 
     if intent_result["intent"] == "QUESTION":
-        answer_result = ask_question(question=user_input, top_k=top_k, mode="CONTEXT")
+        answer_result = ask_question(
+            question=user_input, top_k=top_k, mode="CONTEXT",
+            context_agent=context_agent,
+        )
         state["response"] = {
             "mode": "QUESTION",
             "status": "COMPLETED",
@@ -513,7 +526,12 @@ def classification_node(state: Dict) -> Dict:
         "status": "COMPLETED",
         "message": "Processed as knowledge question.",
         "session_id": session_id,
-        "question_result": ask_question(question=user_input, top_k=state.get("top_k", 4), mode="CONTEXT"),
+        "question_result": ask_question(
+            question=user_input,
+            top_k=state.get("top_k", 4),
+            mode="CONTEXT",
+            context_agent=state.get("context_agent"),
+        ),
         "ba_result": None,
     }
     state["route"] = "done"
