@@ -18,6 +18,7 @@ from src.services.ambiguity_resolution_service import (
     create_pending_intent_id,
     resolve_ambiguous_followup,
 )
+from src.services.meaning_agent import MeaningAgent
 from src.graph.orchestration_graph import build_orchestration_graph
  
 PENDING_INTENT_STORE: Dict[str, Dict] = {}
@@ -73,8 +74,6 @@ CONTEXT_SIGNALS = (
 )
  
 # Stakeholder subjects — business roles/groups that express needs on behalf of others.
-# These are the subjects of third-person requirement statements like
-# "leadership needs profitability visibility by product".
 STAKEHOLDER_SUBJECTS = (
     "leadership",
     "leaders",
@@ -98,7 +97,6 @@ STAKEHOLDER_SUBJECTS = (
     "the organization",
 )
  
-# Need/require verbs that follow a stakeholder subject in a requirement statement.
 STAKEHOLDER_NEED_VERBS = (
     " needs ",
     " need ",
@@ -108,8 +106,6 @@ STAKEHOLDER_NEED_VERBS = (
     " want ",
 )
  
-# Capability nouns that signal a delivery artifact is being requested.
-# These confirm the sentence is asking for something to be built, not asking a question.
 CAPABILITY_NOUNS = (
     "visibility",
     "reporting",
@@ -156,10 +152,8 @@ def _looks_like_context_question(text: str) -> bool:
  
 def _looks_like_concept_question(text: str) -> bool:
     normalized = _normalize(text)
- 
     if normalized.startswith(CONCEPT_PREFIXES):
         return True
- 
     return any(phrase in normalized for phrase in CONCEPT_PHRASES)
  
  
@@ -167,21 +161,9 @@ def _looks_like_stakeholder_requirement(text: str) -> bool:
     """
     Detect third-person stakeholder requirement statements of the form:
     '[stakeholder subject] needs/requires [capability noun]'
- 
-    Examples that should match:
-    - "leadership needs profitability visibility by product"
-    - "finance team needs a monthly cost report"
-    - "product managers need churn tracking by segment"
-    - "the business requires better pipeline visibility"
- 
-    Examples that should NOT match:
-    - "what is profitability?" (question prefix, no stakeholder subject)
-    - "how does the dashboard work?" (question prefix)
-    - "who owns the profitability report?" (question prefix)
     """
     normalized = _normalize(text)
  
-    # Must not be a question — question signals take priority
     if normalized.endswith("?"):
         return False
  
@@ -193,18 +175,13 @@ def _looks_like_stakeholder_requirement(text: str) -> bool:
     if any(normalized.startswith(qs) for qs in question_starters):
         return False
  
-    # Check for: [stakeholder subject] + [need verb] + [capability noun]
     for subject in STAKEHOLDER_SUBJECTS:
         if not normalized.startswith(subject):
             continue
- 
-        # Subject found at the start — now check for a need verb after it
         remainder = normalized[len(subject):]
         for verb in STAKEHOLDER_NEED_VERBS:
             if not remainder.startswith(verb):
                 continue
- 
-            # Verb found — now check the rest contains a capability noun
             after_verb = remainder[len(verb):]
             if any(cap in after_verb for cap in CAPABILITY_NOUNS):
                 return True
@@ -213,29 +190,69 @@ def _looks_like_stakeholder_requirement(text: str) -> bool:
  
  
 def _decide_mode_from_input(user_input: str) -> str:
-    # Explicit imperative requirement signals take highest priority
     if _looks_like_requirement_request(user_input):
         return "REQUIREMENT"
- 
-    # Context document signals
     if _looks_like_context_question(user_input):
         return "CONTEXT"
- 
-    # Concept/definition question signals
     if _looks_like_concept_question(user_input):
         return "CONCEPT"
- 
-    # Third-person stakeholder requirement statements
-    # e.g. "leadership needs profitability visibility by product"
     if _looks_like_stakeholder_requirement(user_input):
         return "REQUIREMENT"
- 
     return "UNDECIDED"
+ 
+ 
+def _route_requirement_through_meaning(
+    meaning_agent: MeaningAgent,
+    user_input: str,
+    session_id: Optional[str],
+    after_deepening: bool = False,
+) -> Dict:
+    """
+    Central helper that runs user_input through the Meaning Agent and
+    decides what happens next. All three requirement entry points
+    (question_node, classification_node, _handle_pending_ambiguity) call
+    this instead of start_requirement_flow directly.
+ 
+    Three outcomes:
+    1. Needs deepening — Meaning Agent wants one clarifying question first.
+       Return the deepening question response. BA does not start yet.
+    2. Shape resolved — enrich the request with the locked category prefix
+       and start the BA flow with shape_result stored on the session.
+    3. Shape not locked (low confidence) — fall through to BA with best
+       available shape rather than blocking the user indefinitely.
+ 
+    after_deepening=True skips the deepening check — used when the request
+    already went through ambiguity resolution before reaching here.
+    """
+    if after_deepening:
+        meaning = meaning_agent.evaluate_after_deepening(user_input)
+    else:
+        meaning = meaning_agent.evaluate(user_input, session_id or "")
+ 
+    # Meaning Agent wants one clarifying question before resolving shape.
+    if meaning.get("mode") == "INTENT_DEEPENING" and meaning.get("response"):
+        return meaning["response"]
+ 
+    # Shape resolved — enrich the request so BA's infer_request_type
+    # picks up the locked category from the start.
+    shape_result = meaning.get("shape_result")
+    if shape_result:
+        enriched_input = MeaningAgent.enrich_request_with_shape(user_input, shape_result)
+    else:
+        enriched_input = user_input
+ 
+    return start_requirement_flow(
+        user_input=enriched_input,
+        shape_result=shape_result,
+    )
  
  
 class LeaderAgent:
     def __init__(self) -> None:
         self.graph = build_orchestration_graph()
+        # Meaning Agent is instantiated once on the Leader and shared across
+        # all calls. It is stateless — safe to reuse.
+        self._meaning_agent = MeaningAgent()
  
     def handle_input(
         self,
@@ -262,12 +279,15 @@ class LeaderAgent:
                     pending_intent=pending_intent,
                 )
  
-            # Session ID was provided but session no longer exists — server was
-            # likely restarted and the in-memory SESSION_STORE was wiped.
-            # Rather than crashing with a 500, start a fresh session so the
-            # user can continue without a manual reset.
+            # Session ID provided but session wiped (server restart).
+            # Recover gracefully by starting a fresh session through the
+            # Meaning Agent rather than crashing with a 500.
             if not existing_session:
-                fresh = start_requirement_flow(user_input=user_input)
+                fresh = _route_requirement_through_meaning(
+                    meaning_agent=self._meaning_agent,
+                    user_input=user_input,
+                    session_id=None,
+                )
                 fresh["_session_recovered"] = True
                 fresh["message"] = (
                     "Your previous session was no longer available. "
@@ -279,6 +299,9 @@ class LeaderAgent:
             "user_input": user_input,
             "top_k": top_k,
             "session_id": session_id,
+            # Pass the Meaning Agent instance into graph state so nodes
+            # can call it without re-instantiating.
+            "meaning_agent": self._meaning_agent,
             "response": None,
         }
         result = self.graph.invoke(state)
@@ -319,7 +342,15 @@ class LeaderAgent:
         del PENDING_INTENT_STORE[session_id]
  
         if resolved_intent == "REQUIREMENT":
-            return start_requirement_flow(user_input=original_request)
+            # Ambiguity resolution already served as the deepening question.
+            # Call evaluate_after_deepening to skip the deepening check and
+            # go straight to shape resolution then BA.
+            return _route_requirement_through_meaning(
+                meaning_agent=self._meaning_agent,
+                user_input=original_request,
+                session_id=session_id,
+                after_deepening=True,
+            )
  
         answer_result = ask_question(question=original_request, top_k=top_k, mode="CONCEPT")
         return {
@@ -340,6 +371,7 @@ def question_node(state: Dict) -> Dict:
     user_input = state["user_input"]
     session_id = state.get("session_id")
     top_k = state.get("top_k", 4)
+    meaning_agent: MeaningAgent = state["meaning_agent"]
  
     mode = _decide_mode_from_input(user_input)
     state["preclassified_mode"] = mode
@@ -371,7 +403,13 @@ def question_node(state: Dict) -> Dict:
         return state
  
     if mode == "REQUIREMENT":
-        state["response"] = start_requirement_flow(user_input=user_input)
+        # Pre-classifier confirmed requirement — route through Meaning Agent
+        # so shape is resolved before BA starts.
+        state["response"] = _route_requirement_through_meaning(
+            meaning_agent=meaning_agent,
+            user_input=user_input,
+            session_id=session_id,
+        )
         state["route"] = "done"
         return state
  
@@ -400,6 +438,7 @@ def classification_node(state: Dict) -> Dict:
     session_id = state.get("session_id")
     intent_result = state["intent_result"]
     intent = intent_result["intent"]
+    meaning_agent: MeaningAgent = state["meaning_agent"]
  
     if intent == "AMBIGUOUS":
         pending_id = create_pending_intent_id()
@@ -418,7 +457,13 @@ def classification_node(state: Dict) -> Dict:
         return state
  
     if intent == "REQUIREMENT":
-        state["response"] = start_requirement_flow(user_input=user_input)
+        # Classification confirmed requirement — route through Meaning Agent
+        # so shape is resolved before BA starts.
+        state["response"] = _route_requirement_through_meaning(
+            meaning_agent=meaning_agent,
+            user_input=user_input,
+            session_id=session_id,
+        )
         state["route"] = "done"
         return state
  
