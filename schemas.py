@@ -41,6 +41,7 @@ class IngestResponse(BaseModel):
     chunks_created: int
     documents_loaded: int
     message: Optional[str] = None
+    context_summary: Optional[Dict[str, Any]] = None
 
 class ProcessResponse(BaseModel):
     mode: str
