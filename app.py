@@ -551,6 +551,250 @@ def render_context_summary_in_chat(context_summary: dict) -> None:
     st.markdown("---")
 
 
+def render_pre_approval_summary(
+    context_summary: dict | None,
+    ba_result: dict | None,
+) -> None:
+    """
+    Renders the pre-approval review panel shown after the context gate is resolved
+    and before the Approve / Revise buttons. Shows:
+      1. Context File Summary  (only when a file was uploaded and confirmed)
+      2. Overall Request vs Jira Epic — a 1:1 alignment view
+    """
+    requirement_document = (ba_result or {}).get("requirement_document") or {}
+    delivery_artifacts   = (ba_result or {}).get("delivery_artifacts") or {}
+    epic                 = delivery_artifacts.get("epic", {})
+    stories              = delivery_artifacts.get("stories", [])
+    epic_title           = epic.get("title", "")
+
+    st.markdown(
+        """
+        <style>
+        .m8-review-card {
+            background: #f8f8f9;
+            border: 1px solid #e2e2e6;
+            border-radius: 16px;
+            padding: 1.4rem 1.6rem 1.2rem 1.6rem;
+            margin-bottom: 1.1rem;
+        }
+        .m8-review-card-title {
+            font-size: 0.72rem;
+            font-weight: 700;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            color: #6b7280;
+            margin-bottom: 0.9rem;
+        }
+        .m8-review-section-label {
+            font-size: 0.78rem;
+            font-weight: 600;
+            color: #374151;
+            margin-top: 0.75rem;
+            margin-bottom: 0.25rem;
+        }
+        .m8-review-value {
+            font-size: 0.88rem;
+            color: #1f2937;
+            line-height: 1.55;
+        }
+        .m8-review-tag {
+            display: inline-block;
+            background: #ededf0;
+            color: #374151;
+            border-radius: 6px;
+            padding: 0.18rem 0.55rem;
+            font-size: 0.72rem;
+            font-weight: 500;
+            margin: 0.15rem 0.2rem 0.15rem 0;
+        }
+        .m8-match-row {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 0.55rem;
+        }
+        .m8-match-label {
+            min-width: 130px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #6b7280;
+            padding-top: 0.1rem;
+        }
+        .m8-match-value {
+            font-size: 0.86rem;
+            color: #1f2937;
+            line-height: 1.5;
+        }
+        .m8-divider-soft {
+            height: 1px;
+            background: #e2e2e6;
+            margin: 0.9rem 0;
+        }
+        </style>
+        """,
+        unsafe_allow_html=True,
+    )
+
+    # ── 1. Requirement Review card ───────────────────────────────────────────
+    # Epic name: normalise to "AI | Req | <Object> — <Type>" display format.
+    # The backend stores the full Jira title; strip the prefix for display only.
+    def _normalise_epic_display(raw: str) -> str:
+        """Return only the human-readable part after the 'AI | Req | ' prefix."""
+        if not raw:
+            return ""
+        # Strip known prefix variants
+        for prefix in ("AI | Req | ", "AI | req | ", "AI|Req|", "AI|req|"):
+            if raw.startswith(prefix):
+                return raw[len(prefix):].strip()
+        return raw.strip()
+
+    epic_display = _normalise_epic_display(epic_title)
+
+    fields = [
+        ("Epic Name",        epic_display),
+        ("Request Summary",  requirement_document.get("problem_statement", "")),
+        ("Objective",        requirement_document.get("business_objective", "")),
+        ("Scope",            requirement_document.get("scope", "")),
+        ("Stakeholders",     requirement_document.get("stakeholders", "")),
+        ("Data & Systems",   requirement_document.get("data_requirements", "")),
+        ("Frequency",        requirement_document.get("frequency", "")),
+        ("Success Criteria", requirement_document.get("success_criteria", "")),
+    ]
+
+    rows_html = ""
+    for label, value in fields:
+        if value and value not in {"", "Needs clarification"}:
+            # Escape any stray HTML in values
+            safe_value = (
+                value
+                .replace("&", "&amp;")
+                .replace("<", "&lt;")
+                .replace(">", "&gt;")
+            )
+            rows_html += (
+                f"<div class='m8-match-row'>"
+                f"<div class='m8-match-label'>{label}</div>"
+                f"<div class='m8-match-value'>{safe_value}</div>"
+                f"</div>"
+                f"<div class='m8-divider-soft'></div>"
+            )
+
+    if rows_html:
+        st.markdown(
+            f"<div class='m8-review-card'>"
+            f"<div class='m8-review-card-title'>📋 Requirement Summary</div>"
+            f"{rows_html}"
+            f"</div>",
+            unsafe_allow_html=True,
+        )
+
+    # ── 2. Context File Summary — sits between Requirement Summary and Additional Details ──
+    if context_summary:
+        name          = context_summary.get("name", "Uploaded file")
+        summary       = context_summary.get("summary", "")
+        topics        = context_summary.get("topics", [])
+        business_area = context_summary.get("business_area", "")
+        signals       = context_summary.get("signals", [])
+        potential_use = context_summary.get("potential_use", "")
+
+        tags_html = "".join(
+            f"<span class='m8-review-tag'>{t}</span>" for t in topics
+        ) if topics else ""
+
+        signal_tags_html = "".join(
+            f"<span class='m8-review-tag'>{s}</span>" for s in signals
+        ) if signals else ""
+
+        parts_html = ""
+        if summary:
+            parts_html += f"<div class='m8-review-section-label'>Summary</div><div class='m8-review-value'>{summary}</div>"
+        if tags_html:
+            parts_html += f"<div class='m8-review-section-label'>Key Topics</div><div>{tags_html}</div>"
+        if business_area:
+            parts_html += f"<div class='m8-review-section-label'>Business Area</div><div class='m8-review-value'>{business_area}</div>"
+        if signal_tags_html:
+            parts_html += f"<div class='m8-review-section-label'>Signals Detected</div><div>{signal_tags_html}</div>"
+        if potential_use:
+            parts_html += f"<div class='m8-review-section-label'>Potential Use</div><div class='m8-review-value'>{potential_use}</div>"
+
+        if parts_html:
+            st.markdown(
+                f"<div class='m8-review-card'>"
+                f"<div class='m8-review-card-title'>📎 Business Context — {name}</div>"
+                f"{parts_html}"
+                f"</div>",
+                unsafe_allow_html=True,
+            )
+
+    # ── 3. Stories + constraints/risks — rendered as native Streamlit ──────────
+    story_count = len(stories)
+    constraints = requirement_document.get("constraints", [])
+    risks       = requirement_document.get("risks", [])
+
+    non_empty_constraints = [c for c in constraints if c and c.strip()]
+    non_empty_risks       = [r for r in risks if r and r.strip()]
+
+    if story_count or non_empty_constraints or non_empty_risks:
+        # Build entire card as one HTML string — never split open/close divs across
+        # separate st.markdown calls, Streamlit renders each call independently
+        # which leaves unclosed divs visible as empty boxes.
+        rows = ""
+
+        if story_count:
+            label_word = "stories" if story_count != 1 else "story"
+            rows += (
+                f"<div class='m8-match-row'>"
+                f"<div class='m8-match-label'>User Stories</div>"
+                f"<div class='m8-match-value'>{story_count} {label_word} mapped to Jira</div>"
+                f"</div><div class='m8-divider-soft'></div>"
+            )
+
+        if non_empty_constraints:
+            items = " · ".join(
+                c.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
+                for c in non_empty_constraints
+            )
+            rows += (
+                f"<div class='m8-match-row'>"
+                f"<div class='m8-match-label'>Constraints</div>"
+                f"<div class='m8-match-value'>{items}</div>"
+                f"</div><div class='m8-divider-soft'></div>"
+            )
+
+        if non_empty_risks:
+            items = " · ".join(
+                r.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
+                for r in non_empty_risks
+            )
+            rows += (
+                f"<div class='m8-match-row'>"
+                f"<div class='m8-match-label'>Risks</div>"
+                f"<div class='m8-match-value'>{items}</div>"
+                f"</div>"
+            )
+
+        st.markdown(
+            f"<div class='m8-review-card'>"
+            f"<div class='m8-review-card-title'>📎 Additional Details</div>"
+            f"{rows}"
+            f"</div>",
+            unsafe_allow_html=True,
+        )
+
+    # ── Story detail expandable ──────────────────────────────────────────────
+    if stories:
+        label_word = "stories" if story_count != 1 else "story"
+        with st.expander(f"View {story_count} user {label_word}", expanded=False):
+            for idx, story in enumerate(stories, start=1):
+                st.markdown(f"**Story {idx}: {story.get('title', '')}**")
+                st.markdown(story.get("description", ""))
+                ac = story.get("acceptance_criteria", [])
+                if ac:
+                    for item in ac:
+                        st.markdown(f"- {item}")
+                if idx < story_count:
+                    st.markdown("---")
+
+
 def render_requirement_document(requirement_document: dict) -> None:
     pass  # replaced by render_final_summary
 
@@ -876,11 +1120,14 @@ def handle_context_gate_response(user_input: str) -> tuple[bool, str | None]:
     if st.session_state.get("awaiting_context_confirmation"):
         if normalized in {"yes", "y", "confirm", "continue", "ok", "proceed"}:
             st.session_state.awaiting_context_confirmation = False
+            # Persist confirmed summary so the pre-approval panel can display it
+            st.session_state.confirmed_context_summary = st.session_state.context_summary_pending
             st.session_state.context_summary_pending = None
             st.session_state.context_gate_completed = True
             return True, "Context confirmed. Proceeding to review."
         if normalized in {"no", "n", "skip"}:
             st.session_state.awaiting_context_confirmation = False
+            st.session_state.confirmed_context_summary = None
             st.session_state.context_summary_pending = None
             st.session_state.context_gate_completed = True
             return True, "Understood. Continuing without this context."
@@ -963,6 +1210,9 @@ if "context_summary_pending" not in st.session_state:
 
 if "awaiting_context_confirmation" not in st.session_state:
     st.session_state.awaiting_context_confirmation = False
+
+if "confirmed_context_summary" not in st.session_state:
+    st.session_state.confirmed_context_summary = None
 
 render_top_logo()
 
@@ -1050,6 +1300,7 @@ with st.sidebar:
         st.session_state.context_gate_completed = False
         st.session_state.context_summary_pending = None
         st.session_state.awaiting_context_confirmation = False
+        st.session_state.confirmed_context_summary = None
         st.success("Session reset.")
 
     st.markdown("</div>", unsafe_allow_html=True)
@@ -1064,10 +1315,6 @@ if not st.session_state.messages:
         ''',
         unsafe_allow_html=True,
     )
-
-if st.session_state.get("awaiting_context_confirmation") and st.session_state.get("context_summary_pending"):
-    with st.chat_message("assistant"):
-        render_context_summary_in_chat(st.session_state.context_summary_pending)
 
 for message in st.session_state.messages:
     with st.chat_message(message["role"]):
@@ -1124,19 +1371,57 @@ if (
             st.error(ingest_result["error"])
         else:
             context_summary = ingest_result.get("context_summary")
-            if context_summary:
-                st.session_state.context_summary_pending = context_summary
-                st.session_state.awaiting_context_confirmation = True
-                st.session_state.context_gate_completed = False
-            else:
-                st.session_state.context_gate_completed = True
+            if not context_summary:
+                context_summary = {
+                    "name": uploaded_file_inline.name,
+                    "summary": "File uploaded successfully. No automated summary was returned by the server.",
+                    "topics": [],
+                    "business_area": "",
+                    "signals": [],
+                    "potential_use": "",
+                }
+            # One-click: upload + analyse + confirm in a single action.
+            # No "type yes" step — go straight to review with summary stored.
+            st.session_state.confirmed_context_summary = context_summary
+            st.session_state.context_summary_pending = None
+            st.session_state.awaiting_context_confirmation = False
+            st.session_state.context_gate_completed = True
             st.rerun()
 
     if skip_clicked:
         st.session_state.context_gate_completed = True
         st.session_state.context_summary_pending = None
+        st.session_state.confirmed_context_summary = None
         st.session_state.awaiting_context_confirmation = False
         st.rerun()
+
+# ── Pre-Approval Summary — shown after context gate resolved, before action buttons ──
+if (
+    st.session_state.ba_session_id
+    and latest_status in {"REVIEW_READY", "DELIVERY_ARTIFACTS_READY"}
+    and st.session_state.context_gate_completed
+):
+    st.markdown("## Review Before Approval")
+    st.markdown(
+        "<span style='font-size:0.88rem;color:#6b7280;'>Check the summary below — this is what will be sent to Jira.</span>",
+        unsafe_allow_html=True,
+    )
+    st.markdown("")
+
+    # Retrieve live BA result for requirement doc + delivery artifacts
+    _ba_result_for_summary = None
+    if st.session_state.latest_ba_result:
+        _ba_result_for_summary = st.session_state.latest_ba_result.get("ba_result")
+
+    # Context summary — only show if user uploaded and confirmed (not skipped)
+    _context_summary_for_panel = st.session_state.get("confirmed_context_summary")
+
+    render_pre_approval_summary(
+        context_summary=_context_summary_for_panel,
+        ba_result=_ba_result_for_summary,
+    )
+
+    st.markdown("")
 
 # ── Review Actions — shown after context gate resolved ──
 if (
