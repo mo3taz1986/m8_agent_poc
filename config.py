@@ -45,10 +45,22 @@ MIN_GROUNDING_SCORE_TO_ACCEPT = 0.20
 
 SUPPORTED_EXTENSIONS = {".txt", ".pdf"}
 
-# Jira settings
-JIRA_BASE_URL = os.getenv("JIRA_BASE_URL", "").rstrip("/")
-JIRA_EMAIL = os.getenv("JIRA_EMAIL", "")
-JIRA_API_TOKEN = os.getenv("JIRA_API_TOKEN", "")
-JIRA_PROJECT_KEY = os.getenv("JIRA_PROJECT_KEY", "")
+# ── Jira ──────────────────────────────────────────────────────────────────────
+JIRA_BASE_URL        = os.getenv("JIRA_BASE_URL", "").rstrip("/")
+JIRA_EMAIL           = os.getenv("JIRA_EMAIL", "")
+JIRA_API_TOKEN       = os.getenv("JIRA_API_TOKEN", "")
+JIRA_PROJECT_KEY     = os.getenv("JIRA_PROJECT_KEY", "")
 JIRA_EPIC_ISSUE_TYPE = os.getenv("JIRA_EPIC_ISSUE_TYPE", "Epic")
-JIRA_STORY_ISSUE_TYPE = os.getenv("JIRA_STORY_ISSUE_TYPE", "Story")
+JIRA_STORY_ISSUE_TYPE= os.getenv("JIRA_STORY_ISSUE_TYPE", "Story")
+
+# ── Session store (Step 5) ────────────────────────────────────────────────────
+# REDIS_URL — connection string for persistent sessions.
+# Leave empty to use the in-memory fallback (sessions lost on restart).
+# Examples:
+#   Local Redis:           redis://localhost:6379/0
+#   Redis with password:   redis://:yourpassword@localhost:6379/0
+REDIS_URL = os.getenv("REDIS_URL", "")
+
+# How long a session lives without activity before Redis expires it.
+# Default: 86400 seconds (24 hours). Resets on every session write.
+SESSION_TTL_SECONDS = int(os.getenv("SESSION_TTL_SECONDS", "86400"))
