@@ -118,57 +118,91 @@ def generate_requirement_document(requirement_state: Dict) -> Dict:
 
 
 def fallback_epic_meaning(requirement_document: Dict) -> str:
-    source = safe_text(requirement_document.get("source_request"))
-    objective = safe_text(requirement_document.get("business_objective"))
+    """
+    Produces a clean, normalised fallback epic object name when the LLM call
+    fails or returns an out-of-range title.
 
+    Strategy:
+    1. Prefer business_objective over raw source_request — it is already
+       a cleaned, intent-focused sentence produced by the BA agent.
+    2. Strip sentence-template prefixes and raw user phrasing artifacts
+       (e.g. "requirement:", "We new", "The request originated from:").
+    3. Detect a delivery type keyword from the combined text.
+    4. Extract the noun subject by removing fillers and delivery-type words.
+    5. Title-case and truncate to produce a Jira-safe name.
+    """
+    objective = safe_text(requirement_document.get("business_objective"))
+    source    = safe_text(requirement_document.get("source_request"))
+
+    # Always use source_request — it is the clearest, shortest signal for naming.
+    # business_objective is a long sentence and produces noisy titles in the fallback.
     base = source if source != "Needs clarification" else objective
     base = clean_text(base)
 
+    # Strip common sentence-template prefixes that bleed in from generated text
+    strip_prefixes = [
+        r"the request originated from\s*[:\-]?\s*['\"]?",
+        r"the primary business objective is\s*[:\-]?\s*",
+        r"[a-z ,]+requirement[s]?\s*[:\-]\s*",   # "Data pipeline requirement:"
+        r"we need (a |an |the )?",
+        r"build (a |an |the )?",
+        r"create (a |an |the )?",
+        r"develop (a |an |the )?",
+        r"implement (a |an |the )?",
+        r"new\s+",
+    ]
+    for pattern in strip_prefixes:
+        base = re.sub(pattern, "", base, flags=re.IGNORECASE).strip()
+
+    # Detect delivery type from the full combined text before further stripping
+    delivery_type_map = [
+        (r"\bpipeline\b",     "Pipeline"),
+        (r"\bdashboard\b",    "Dashboard"),
+        (r"\breport\b",       "Report"),
+        (r"\bmodel\b",        "Model"),
+        (r"\bworkflow\b",     "Workflow"),
+        (r"\bintegration\b",  "Integration"),
+        (r"\bautomation\b",   "Automation"),
+        (r"\bextract\b",      "Extract"),
+        (r"\bview\b",         "View"),
+    ]
+    detected_type = ""
+    combined_text = f"{base} {source} {objective}".lower()
+    for pattern, label in delivery_type_map:
+        if re.search(pattern, combined_text):
+            detected_type = label
+            break
+
+    # Strip filler and structural words to isolate the business subject noun
     fillers = {
-        "build",
-        "create",
-        "develop",
-        "need",
-        "needs",
-        "help",
-        "please",
-        "should",
-        "would",
-        "could",
-        "ability",
-        "capability",
-        "allow",
-        "leadership",
-        "team",
-        "users",
-        "system",
-        "solution",
-        "it",
-        "this",
-        "that",
-        "the",
-        "a",
-        "an",
-        "to",
-        "for",
-        "of",
-        "and",
+        "build", "create", "develop", "implement", "generate",
+        "need", "needs", "want", "wants", "help", "please",
+        "should", "would", "could", "ability", "capability",
+        "allow", "allows", "leadership", "team", "users", "user",
+        "system", "solution", "it", "this", "that", "the", "a", "an",
+        "to", "for", "of", "and", "with", "by", "in", "on", "at",
+        "new", "better", "improved", "fast", "faster",
+        "requirement", "requirements",
+        # delivery-type words handled separately — strip here to avoid duplication
+        "pipeline", "dashboard", "report", "model", "workflow",
+        "integration", "automation", "extract", "view",
     }
 
     words = []
     for word in base.split():
-        cleaned_word = re.sub(r"[^a-zA-Z0-9\-]", "", word)
-        if not cleaned_word:
+        cleaned = re.sub(r"[^a-zA-Z0-9\-]", "", word)
+        if not cleaned:
             continue
-        if cleaned_word.lower() in fillers:
+        if cleaned.lower() in fillers:
             continue
-        words.append(cleaned_word)
+        words.append(cleaned.capitalize())
 
-    compressed = " ".join(words[:5]).strip()
-    if not compressed:
-        compressed = "Business Capability"
+    subject = " ".join(words[:4]).strip()
+    if not subject:
+        subject = "Business Capability"
 
-    return truncate_text(compressed, 60)
+    name = f"{subject} {detected_type}".strip() if detected_type else subject
+    return truncate_text(name, 60)
 
 
 def generate_ai_epic_name(requirement_document: Dict) -> str:
@@ -183,42 +217,26 @@ def generate_ai_epic_name(requirement_document: Dict) -> str:
 
     try:
         prompt = f"""
-You are generating a Jira Epic title for an enterprise delivery workflow.
+Convert the following user request into a clean Jira Epic title.
 
-Task:
-Generate a concise, professional Epic name that would appear in a real Jira board.
+The user said: "{source}"
 
 Rules:
-- 5 to 12 words maximum
-- Must include the business intent (what outcome or decision it serves)
-- Must include the delivery type (Dashboard, Pipeline, Report, Model, Workflow, Integration, Extract, View)
-- Use title case
-- No verbs: do not start with Build, Create, Develop, Implement, Generate, Help
-- No vague terms: avoid System, Solution, Enhancement, Update, Improvement, Tool
-- Noun-phrase style — sounds like a named product or programme
+- Extract the core business subject from what the user asked for (e.g. "product profitability", "RPM data", "customer churn")
+- Append the correct delivery type: Dashboard, Pipeline, Report, Model, Workflow, Integration, Automation, Extract, or View
+- 3 to 8 words total
+- Title Case
+- Noun phrase only — no verbs, no filler words
 - No punctuation except spaces and hyphens
-- Return only the Epic name — no explanation, no quotes, no prefix
+- Return ONLY the Jira title. Nothing else.
 
-Good examples:
-Customer Profitability Dashboard for Finance Analytics
-Automated Data Pipeline for Regulatory Reporting
-Sales Margin Analysis Dashboard with KPI Standardisation
-Counterparty Risk Exposure Report for Credit Review
-Customer Churn Prediction Model for Retention Planning
-
-Bad examples (do not produce these):
-Reporting system
-Dashboard update
-Data enhancement
-Build a finance dashboard
-New solution for reporting
-
-Input:
-Request: {source}
-Business objective: {objective}
-Scope: {scope}
-Stakeholders: {stakeholders}
-Success criteria: {success_criteria}
+Examples:
+"we need a dashboard for product profitability by region" -> Product Profitability Dashboard by Region
+"build me a pipeline to move RPM data to the warehouse" -> RPM Data Pipeline to Warehouse
+"create a monthly P&L consolidation report" -> Monthly P&L Consolidation Report
+"we need something to track supplier KPIs" -> Supplier KPI Tracking Dashboard
+"predict which customers are going to churn" -> Customer Churn Prediction Model
+"dashboard for product profitability" -> Product Profitability Dashboard
 """.strip()
 
         response = _client.messages.create(
@@ -234,6 +252,17 @@ Success criteria: {success_criteria}
             title = getattr(first_block, "text", "") or ""
 
         title = clean_text(title).replace('"', "").strip()
+
+        # Reject if raw input phrasing or verb-led output leaked through
+        bad_patterns = [
+            r"\bwe\b", r"\bi\b", r"\bneed\b", r"\bbuild\b",
+            r"\bcreate\b", r"\brequirement[s]?\b",
+            r"^enable\b", r"^allow\b", r"^help\b",
+            r"^implement\b", r"^develop\b", r"^generate\b",
+        ]
+        for bad in bad_patterns:
+            if re.search(bad, title, flags=re.IGNORECASE):
+                raise ValueError(f"Epic title contains raw input phrasing: '{title}'")
 
         word_count = len(title.split())
         if not title or word_count < 3 or word_count > 14:
