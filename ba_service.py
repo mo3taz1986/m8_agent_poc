@@ -1,6 +1,7 @@
 from typing import Dict, Optional
-from uuid import uuid4
 
+from src.config import REDIS_URL, SESSION_TTL_SECONDS
+from src.services.session_store import SessionStore
 from src.services.clarification_service import (
     initialize_requirement_state,
     build_interpreted_summary,
@@ -21,11 +22,15 @@ from src.services.answer_quality_service import is_weak_answer, build_weak_answe
 from src.services.meaning_interpreter import interpret_clarification_answer
 from src.services.clarification_response_builder import build_clarification_feedback
 
-SESSION_STORE: Dict[str, Dict] = {}
+# ── Session store ─────────────────────────────────────────────────────────────
+# Single module-level instance shared across all requests.
+# Uses Redis when REDIS_URL is set in .env, falls back to in-memory dict
+# automatically when REDIS_URL is empty or Redis is unreachable.
+session_store = SessionStore(redis_url=REDIS_URL, ttl_seconds=SESSION_TTL_SECONDS)
 
 
 def create_session_id() -> str:
-    return str(uuid4())
+    return session_store.create_session_id()
 
 
 def _build_next_step_guidance(stage: str) -> str:
@@ -97,41 +102,24 @@ def start_requirement_flow(
     """
     Start a new BA requirement session.
 
-    shape_result — optional shape dict from the Meaning Agent. When provided
-    it is stored on the session so downstream components (decision engine,
-    artifact service) can use the pre-resolved category without re-classifying
-    from the raw request string.
-
-    Expected shape_result keys (all optional, missing keys are silently ignored):
-      resolved_category  — subtype string e.g. "interactive_dashboard"
-      resolved_label     — human label e.g. "dashboard requirement"
-      confidence         — float 0.0–1.0
-      is_locked          — bool
-      method             — classification method string
+    shape_result — optional shape dict from the Meaning Agent.
+    metadata_result — optional result from the Metadata Agent.
     """
     session_id = create_session_id()
     requirement_state = initialize_requirement_state(user_input)
 
-    # If the Meaning Agent resolved a shape, store it on the requirement_state
-    # so the decision engine and question strategy service can use the locked
-    # category from the very first turn rather than re-classifying from text.
     if shape_result:
         requirement_state["_shape_result"] = shape_result
         resolved_category = shape_result.get("resolved_category")
         if resolved_category:
             requirement_state["_resolved_request_type"] = resolved_category
 
-    # Store the Metadata Agent result so the BA Agent opening message and
-    # requirement document can reference it.
     if metadata_result:
         requirement_state["_metadata_result"] = metadata_result
 
     decision = decide_next_step(requirement_state)
 
-    # Build the opening message BEFORE calling build_clarification_feedback
-    # so it can be passed as opening_message. Message must exist before
-    # initial_feedback is constructed — previous ordering caused
-    # UnboundLocalError: cannot access local variable 'message'.
+    # Build opening message before calling build_clarification_feedback
     if shape_result and shape_result.get("resolved_label"):
         label = shape_result["resolved_label"]
         message = f"I've identified this as a {label}. Let me shape it into a structured requirement."
@@ -164,7 +152,7 @@ def start_requirement_flow(
         opening_message=message,
     )
 
-    SESSION_STORE[session_id] = {
+    new_session = {
         "mode": "REQUIREMENT",
         "stage": "clarification",
         "requirement_state": requirement_state,
@@ -186,7 +174,10 @@ def start_requirement_flow(
         approval_status="NOT_READY",
         clarification_feedback=initial_feedback,
     )
-    SESSION_STORE[session_id]["latest_ba_result"] = ba_payload
+    new_session["latest_ba_result"] = ba_payload
+
+    # Write the complete session in one call — no partial mutations
+    session_store.set(session_id, new_session)
 
     return {
         "mode": "REQUIREMENT",
@@ -199,7 +190,7 @@ def start_requirement_flow(
 
 
 def get_session(session_id: str) -> Optional[Dict]:
-    return SESSION_STORE.get(session_id)
+    return session_store.get(session_id)
 
 
 def apply_clarification_answer(requirement_state: Dict, field: str | None, user_input: str) -> Dict:
@@ -210,12 +201,7 @@ def apply_clarification_answer(requirement_state: Dict, field: str | None, user_
     updated_state[field] = user_input.strip()
 
     history = list(updated_state.get("conversation_history", []))
-    history.append(
-        {
-            "role": "user",
-            "content": user_input,
-        }
-    )
+    history.append({"role": "user", "content": user_input})
     updated_state["conversation_history"] = history
 
     return updated_state
@@ -229,22 +215,12 @@ def continue_requirement_flow(session_id: str, user_input: str) -> Dict:
     requirement_state = session["requirement_state"]
     approval_status = session.get("approval_status", "NOT_READY")
 
-    # If this session was explicitly sent back for revision,
-    # treat the next user input as revision feedback first.
+    # Revision path
     if approval_status == "REVISION_REQUESTED":
         revision_result = apply_revision_feedback(requirement_state, user_input)
         requirement_state = revision_result["updated_state"]
-        session["requirement_state"] = requirement_state
-        session["approval_status"] = "NOT_READY"
-        session["stage"] = "clarification"
-        session["requirement_document"] = None
-        session["delivery_artifacts"] = None
-        session["execution_package"] = None
-        session["jira_payload"] = None
-        session["jira_submission_result"] = None
 
         decision = decide_next_step(requirement_state)
-        session["current_field"] = decision["question_field"]
 
         clarification_feedback = build_clarification_feedback(
             user_input=user_input,
@@ -261,14 +237,23 @@ def continue_requirement_flow(session_id: str, user_input: str) -> Dict:
             approval_status="NOT_READY",
             clarification_feedback=clarification_feedback,
         )
+
+        session["requirement_state"] = requirement_state
+        session["approval_status"] = "NOT_READY"
+        session["stage"] = "clarification"
+        session["requirement_document"] = None
+        session["delivery_artifacts"] = None
+        session["execution_package"] = None
+        session["jira_payload"] = None
+        session["jira_submission_result"] = None
+        session["current_field"] = decision["question_field"]
         session["latest_ba_result"] = ba_payload
+        session_store.set(session_id, session)
 
         return {
             "mode": "REQUIREMENT",
             "status": "CLARIFICATION_REQUIRED",
-            "message": (
-                "I interpreted your revision feedback and reopened the affected parts of the requirement."
-            ),
+            "message": "I interpreted your revision feedback and reopened the affected parts of the requirement.",
             "session_id": session_id,
             "question_result": None,
             "ba_result": ba_payload,
@@ -277,10 +262,8 @@ def continue_requirement_flow(session_id: str, user_input: str) -> Dict:
     current_field = session.get("current_field")
     trimmed_input = (user_input or "").strip()
 
+    # Weak answer — re-ask the same question
     if current_field and is_weak_answer(trimmed_input):
-        session["stage"] = "clarification"
-        session["approval_status"] = "NOT_READY"
-
         latest_ba_result = session.get("latest_ba_result") or {}
         clarification_feedback = {
             "answer_status": "weak",
@@ -302,7 +285,11 @@ def continue_requirement_flow(session_id: str, user_input: str) -> Dict:
             jira_submission_result=session.get("jira_submission_result"),
             clarification_feedback=clarification_feedback,
         )
+
+        session["stage"] = "clarification"
+        session["approval_status"] = "NOT_READY"
         session["latest_ba_result"] = ba_payload
+        session_store.set(session_id, session)
 
         return {
             "mode": "REQUIREMENT",
@@ -313,6 +300,7 @@ def continue_requirement_flow(session_id: str, user_input: str) -> Dict:
             "ba_result": ba_payload,
         }
 
+    # Normal clarification answer
     latest_ba_result = session.get("latest_ba_result") or {}
     current_question = latest_ba_result.get("current_question")
 
@@ -329,31 +317,16 @@ def continue_requirement_flow(session_id: str, user_input: str) -> Dict:
         updates = interpreted.get("fields_to_update", {}) or {}
 
         for field, value in updates.items():
-            # Only overwrite if field is None or is the current field being answered.
-            # This prevents multi-field interpretation from stomping on previously
-            # confirmed answers (e.g. re-overwriting data_sources after stakeholders
-            # is answered, which caused repeated questions).
             if updated_state.get(field) is None or field == current_field:
                 updated_state[field] = value
 
-        # CRITICAL: Always guarantee the current field is written with the user's
-        # answer as a fallback. The interpreter may map the answer to a different
-        # field entirely (e.g. user answers data_sources question but interpreter
-        # only writes to scope), leaving current_field as None — which causes
-        # identify_missing_fields to re-queue it and ask the same question again
-        # under a different pattern from the question library.
+        # Always guarantee the current field is written
         if current_field and updated_state.get(current_field) is None:
             updated_state[current_field] = trimmed_input
 
         history = list(updated_state.get("conversation_history", []))
-        history.append(
-            {
-                "role": "user",
-                "content": trimmed_input,
-            }
-        )
+        history.append({"role": "user", "content": trimmed_input})
         updated_state["conversation_history"] = history
-
         requirement_state = updated_state
     else:
         requirement_state = apply_clarification_answer(
@@ -368,14 +341,6 @@ def continue_requirement_flow(session_id: str, user_input: str) -> Dict:
     session["current_field"] = decision["question_field"]
 
     if decision["next_action"] == "ASK":
-        session["stage"] = "clarification"
-        session["requirement_document"] = None
-        session["delivery_artifacts"] = None
-        session["execution_package"] = None
-        session["jira_payload"] = None
-        session["jira_submission_result"] = None
-        session["approval_status"] = "NOT_READY"
-
         clarification_feedback = build_clarification_feedback(
             user_input=trimmed_input,
             interpreted=interpreted,
@@ -391,7 +356,16 @@ def continue_requirement_flow(session_id: str, user_input: str) -> Dict:
             approval_status="NOT_READY",
             clarification_feedback=clarification_feedback,
         )
+
+        session["stage"] = "clarification"
+        session["requirement_document"] = None
+        session["delivery_artifacts"] = None
+        session["execution_package"] = None
+        session["jira_payload"] = None
+        session["jira_submission_result"] = None
+        session["approval_status"] = "NOT_READY"
         session["latest_ba_result"] = ba_payload
+        session_store.set(session_id, session)
 
         return {
             "mode": "REQUIREMENT",
@@ -402,16 +376,9 @@ def continue_requirement_flow(session_id: str, user_input: str) -> Dict:
             "ba_result": ba_payload,
         }
 
+    # All fields complete — generate artifacts
     requirement_document = generate_requirement_document(requirement_state)
     delivery_artifacts = generate_epic_and_stories(requirement_document)
-
-    session["stage"] = "REVIEW_READY"
-    session["requirement_document"] = requirement_document
-    session["delivery_artifacts"] = delivery_artifacts
-    session["execution_package"] = None
-    session["jira_payload"] = None
-    session["jira_submission_result"] = None
-    session["approval_status"] = "PENDING_REVIEW"
 
     ba_payload = build_ba_payload(
         stage="review_ready",
@@ -420,7 +387,16 @@ def continue_requirement_flow(session_id: str, user_input: str) -> Dict:
         requirement_document=requirement_document,
         delivery_artifacts=delivery_artifacts,
     )
+
+    session["stage"] = "REVIEW_READY"
+    session["requirement_document"] = requirement_document
+    session["delivery_artifacts"] = delivery_artifacts
+    session["execution_package"] = None
+    session["jira_payload"] = None
+    session["jira_submission_result"] = None
+    session["approval_status"] = "PENDING_REVIEW"
     session["latest_ba_result"] = ba_payload
+    session_store.set(session_id, session)
 
     return {
         "mode": "REQUIREMENT",
@@ -440,9 +416,6 @@ def approve_requirement_flow(session_id: str) -> Dict:
     if session.get("stage") != "REVIEW_READY":
         raise ValueError("Artifacts are not in a review-ready state.")
 
-    session["stage"] = "EXECUTION_READY"
-    session["approval_status"] = "APPROVED"
-
     ba_payload = build_ba_payload(
         stage="execution_ready",
         requirement_state=session["requirement_state"],
@@ -453,7 +426,11 @@ def approve_requirement_flow(session_id: str) -> Dict:
         jira_payload=session.get("jira_payload"),
         jira_submission_result=session.get("jira_submission_result"),
     )
+
+    session["stage"] = "EXECUTION_READY"
+    session["approval_status"] = "APPROVED"
     session["latest_ba_result"] = ba_payload
+    session_store.set(session_id, session)
 
     return {
         "mode": "REQUIREMENT",
@@ -470,9 +447,6 @@ def revise_requirement_flow(session_id: str) -> Dict:
     if not session:
         raise ValueError(f"Session not found: {session_id}")
 
-    session["stage"] = "clarification"
-    session["approval_status"] = "REVISION_REQUESTED"
-
     ba_payload = build_ba_payload(
         stage="clarification",
         requirement_state=session["requirement_state"],
@@ -483,14 +457,16 @@ def revise_requirement_flow(session_id: str) -> Dict:
         jira_payload=session.get("jira_payload"),
         jira_submission_result=session.get("jira_submission_result"),
     )
+
+    session["stage"] = "clarification"
+    session["approval_status"] = "REVISION_REQUESTED"
     session["latest_ba_result"] = ba_payload
+    session_store.set(session_id, session)
 
     return {
         "mode": "REQUIREMENT",
         "status": "REVISION_REQUIRED",
-        "message": (
-            "Revision requested. Tell me what should change, and I'll reopen the affected parts of the requirement."
-        ),
+        "message": "Revision requested. Tell me what should change, and I'll reopen the affected parts of the requirement.",
         "session_id": session_id,
         "question_result": None,
         "ba_result": ba_payload,
@@ -513,10 +489,6 @@ def generate_jira_payload_flow(session_id: str) -> Dict:
     execution_package = build_execution_package(requirement_document, delivery_artifacts)
     jira_payload = build_jira_payload(execution_package)
 
-    session["execution_package"] = execution_package
-    session["jira_payload"] = jira_payload
-    session["stage"] = "JIRA_PAYLOAD_READY"
-
     ba_payload = build_ba_payload(
         stage="jira_payload_ready",
         requirement_state=session["requirement_state"],
@@ -527,7 +499,12 @@ def generate_jira_payload_flow(session_id: str) -> Dict:
         jira_payload=jira_payload,
         jira_submission_result=session.get("jira_submission_result"),
     )
+
+    session["execution_package"] = execution_package
+    session["jira_payload"] = jira_payload
+    session["stage"] = "JIRA_PAYLOAD_READY"
     session["latest_ba_result"] = ba_payload
+    session_store.set(session_id, session)
 
     return {
         "mode": "EXECUTION",
@@ -550,9 +527,6 @@ def send_to_jira_flow(session_id: str) -> Dict:
 
     submission_result = submit_jira_payload(jira_payload)
 
-    session["jira_submission_result"] = submission_result
-    session["stage"] = "JIRA_SUBMITTED"
-
     ba_payload = build_ba_payload(
         stage="jira_submitted",
         requirement_state=session["requirement_state"],
@@ -563,7 +537,11 @@ def send_to_jira_flow(session_id: str) -> Dict:
         jira_payload=session.get("jira_payload"),
         jira_submission_result=submission_result,
     )
+
+    session["jira_submission_result"] = submission_result
+    session["stage"] = "JIRA_SUBMITTED"
     session["latest_ba_result"] = ba_payload
+    session_store.set(session_id, session)
 
     return {
         "mode": "EXECUTION",
