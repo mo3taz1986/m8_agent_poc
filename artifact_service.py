@@ -186,22 +186,32 @@ def generate_ai_epic_name(requirement_document: Dict) -> str:
 You are generating a Jira Epic title for an enterprise delivery workflow.
 
 Task:
-Generate a short, clean Epic name based on the request intent.
+Generate a concise, professional Epic name that would appear in a real Jira board.
 
 Rules:
-- Return only the Epic name
-- Do not return a sentence
-- Do not include verbs like build, create, develop, implement, help
-- Prefer noun-style business capability wording
-- Max 6 words
-- No punctuation except spaces
-- Make it sound like a real product or delivery Epic title
+- 5 to 12 words maximum
+- Must include the business intent (what outcome or decision it serves)
+- Must include the delivery type (Dashboard, Pipeline, Report, Model, Workflow, Integration, Extract, View)
+- Use title case
+- No verbs: do not start with Build, Create, Develop, Implement, Generate, Help
+- No vague terms: avoid System, Solution, Enhancement, Update, Improvement, Tool
+- Noun-phrase style — sounds like a named product or programme
+- No punctuation except spaces and hyphens
+- Return only the Epic name — no explanation, no quotes, no prefix
 
-Examples:
-Customer Profitability Workflow Report
-Weekly Revenue Performance Dashboard
-Counterparty Data Quality Monitoring
-Loan Origination Intake Automation
+Good examples:
+Customer Profitability Dashboard for Finance Analytics
+Automated Data Pipeline for Regulatory Reporting
+Sales Margin Analysis Dashboard with KPI Standardisation
+Counterparty Risk Exposure Report for Credit Review
+Customer Churn Prediction Model for Retention Planning
+
+Bad examples (do not produce these):
+Reporting system
+Dashboard update
+Data enhancement
+Build a finance dashboard
+New solution for reporting
 
 Input:
 Request: {source}
@@ -213,7 +223,7 @@ Success criteria: {success_criteria}
 
         response = _client.messages.create(
             model="claude-3-5-sonnet-20241022",
-            max_tokens=40,
+            max_tokens=60,
             temperature=0.1,
             messages=[{"role": "user", "content": prompt}],
         )
@@ -223,12 +233,13 @@ Success criteria: {success_criteria}
             first_block = response.content[0]
             title = getattr(first_block, "text", "") or ""
 
-        title = clean_text(title).replace('"', "")
+        title = clean_text(title).replace('"', "").strip()
 
-        if not title or len(title.split()) > 8:
-            raise ValueError("AI title invalid")
+        word_count = len(title.split())
+        if not title or word_count < 3 or word_count > 14:
+            raise ValueError(f"Epic title out of range: '{title}'")
 
-        title = truncate_text(title, 60)
+        title = truncate_text(title, 80)
         return f"AI | Req | {title}"
 
     except Exception:
