@@ -1,4 +1,5 @@
-from typing import Dict, Optional
+from datetime import datetime, timezone
+from typing import Dict, List, Optional
 
 from src.config import REDIS_URL, SESSION_TTL_SECONDS
 from src.services.session_store import SessionStore
@@ -29,6 +30,23 @@ from src.services.clarification_response_builder import build_clarification_feed
 session_store = SessionStore(redis_url=REDIS_URL, ttl_seconds=SESSION_TTL_SECONDS)
 
 
+# ── Canonical stage names ─────────────────────────────────────────────────────
+# All stage values stored in session dicts and the requests index use lowercase.
+# Format for display at render time — never store uppercase stage strings.
+#
+#   clarification
+#   review_ready
+#   delivery_artifacts_ready
+#   execution_ready
+#   jira_payload_ready
+#   jira_submitted
+
+
+def _now_iso() -> str:
+    """Return current UTC time as an ISO 8601 string."""
+    return datetime.now(timezone.utc).isoformat()
+
+
 def create_session_id() -> str:
     return session_store.create_session_id()
 
@@ -37,6 +55,8 @@ def _build_next_step_guidance(stage: str) -> str:
     if stage == "clarification":
         return "Answer the current question and I will refine the requirement further."
     if stage == "review_ready":
+        return "Review the generated requirement package and decide whether to approve it or request revision."
+    if stage == "delivery_artifacts_ready":
         return "Review the generated requirement package and decide whether to approve it or request revision."
     if stage == "execution_ready":
         return "The requirement package is approved and ready to be transformed into an execution payload."
@@ -62,7 +82,9 @@ def build_ba_payload(
     reasoning_summary = build_reasoning_summary(requirement_state)
     decision = decide_next_step(requirement_state)
 
-    if stage in {"review_ready", "execution_ready", "jira_payload_ready", "jira_submitted"}:
+    review_stages = {"review_ready", "delivery_artifacts_ready", "execution_ready", "jira_payload_ready", "jira_submitted"}
+
+    if stage in review_stages:
         current_field = None
         current_field_label = None
         current_question = None
@@ -94,6 +116,73 @@ def build_ba_payload(
     }
 
 
+def _derive_initial_title(shape_result: Optional[Dict]) -> str:
+    """
+    Derive a working title for a new request.
+
+    Priority:
+      1. shape_result["resolved_label"]  — specific and immediate
+      2. "Draft Request"                  — safe fallback
+
+    The title is later promoted to the epic name once artifacts are generated.
+    See _promote_title_from_epic().
+    """
+    if shape_result:
+        label = shape_result.get("resolved_label") or shape_result.get("resolved_category")
+        if label:
+            return str(label).strip()
+    return "Draft Request"
+
+
+def _promote_title_from_epic(request_id: str, delivery_artifacts: Optional[Dict]) -> None:
+    """
+    Once delivery artifacts are generated, upgrade the request title to the
+    epic name so the sidebar shows a meaningful label.
+
+    Strips the 'AI | Req | ' prefix that the backend stores in epic titles
+    because that prefix is Jira formatting — not a human-readable title.
+    """
+    if not request_id or not delivery_artifacts:
+        return
+
+    epic_title = (delivery_artifacts.get("epic") or {}).get("title", "")
+    if not epic_title:
+        return
+
+    for prefix in ("AI | Req | ", "AI | req | ", "AI|Req|", "AI|req|"):
+        if epic_title.startswith(prefix):
+            epic_title = epic_title[len(prefix):].strip()
+            break
+
+    if epic_title:
+        session_store.update_request_metadata(
+            request_id,
+            title=epic_title,
+            last_updated=_now_iso(),
+        )
+
+
+def _sync_messages_to_index(request_id: str, messages: List[Dict]) -> None:
+    """
+    Persist the rendered chat messages list to the request record in the index.
+    Only stores role + content — debug payloads are intentionally excluded.
+    """
+    if not request_id:
+        return
+
+    clean = [
+        {"role": m["role"], "content": m.get("content", "")}
+        for m in messages
+        if m.get("role") in {"user", "assistant"}
+    ]
+
+    session_store.update_request_metadata(
+        request_id,
+        messages=clean,
+        last_updated=_now_iso(),
+    )
+
+
 def start_requirement_flow(
     user_input: str,
     shape_result: Optional[Dict] = None,
@@ -104,8 +193,11 @@ def start_requirement_flow(
 
     shape_result — optional shape dict from the Meaning Agent.
     metadata_result — optional result from the Metadata Agent.
+
+    Creates both a session record and a request record in the index.
     """
     session_id = create_session_id()
+    request_id = session_store.create_request_id()
     requirement_state = initialize_requirement_state(user_input)
 
     if shape_result:
@@ -154,7 +246,8 @@ def start_requirement_flow(
 
     new_session = {
         "mode": "REQUIREMENT",
-        "stage": "clarification",
+        "stage": "clarification",          # lowercase — canonical
+        "request_id": request_id,
         "requirement_state": requirement_state,
         "current_field": decision["question_field"],
         "shape_result": shape_result,
@@ -176,14 +269,25 @@ def start_requirement_flow(
     )
     new_session["latest_ba_result"] = ba_payload
 
-    # Write the complete session in one call — no partial mutations
+    # Persist session
     session_store.set(session_id, new_session)
+
+    # Register request in the index
+    initial_title = _derive_initial_title(shape_result)
+    session_store.add_request_to_index(
+        request_id=request_id,
+        session_id=session_id,
+        title=initial_title,
+        status="clarification",
+        last_updated=_now_iso(),
+    )
 
     return {
         "mode": "REQUIREMENT",
         "status": "CLARIFICATION_REQUIRED",
         "message": message,
         "session_id": session_id,
+        "request_id": request_id,
         "question_result": None,
         "ba_result": ba_payload,
     }
@@ -212,6 +316,7 @@ def continue_requirement_flow(session_id: str, user_input: str) -> Dict:
     if not session:
         raise ValueError(f"Session not found: {session_id}")
 
+    request_id = session.get("request_id", "")
     requirement_state = session["requirement_state"]
     approval_status = session.get("approval_status", "NOT_READY")
 
@@ -250,11 +355,18 @@ def continue_requirement_flow(session_id: str, user_input: str) -> Dict:
         session["latest_ba_result"] = ba_payload
         session_store.set(session_id, session)
 
+        session_store.update_request_metadata(
+            request_id,
+            status="clarification",
+            last_updated=_now_iso(),
+        )
+
         return {
             "mode": "REQUIREMENT",
             "status": "CLARIFICATION_REQUIRED",
             "message": "I interpreted your revision feedback and reopened the affected parts of the requirement.",
             "session_id": session_id,
+            "request_id": request_id,
             "question_result": None,
             "ba_result": ba_payload,
         }
@@ -291,11 +403,18 @@ def continue_requirement_flow(session_id: str, user_input: str) -> Dict:
         session["latest_ba_result"] = ba_payload
         session_store.set(session_id, session)
 
+        session_store.update_request_metadata(
+            request_id,
+            status="clarification",
+            last_updated=_now_iso(),
+        )
+
         return {
             "mode": "REQUIREMENT",
             "status": "CLARIFICATION_REQUIRED",
             "message": build_weak_answer_message(current_field),
             "session_id": session_id,
+            "request_id": request_id,
             "question_result": None,
             "ba_result": ba_payload,
         }
@@ -367,11 +486,18 @@ def continue_requirement_flow(session_id: str, user_input: str) -> Dict:
         session["latest_ba_result"] = ba_payload
         session_store.set(session_id, session)
 
+        session_store.update_request_metadata(
+            request_id,
+            status="clarification",
+            last_updated=_now_iso(),
+        )
+
         return {
             "mode": "REQUIREMENT",
             "status": "CLARIFICATION_REQUIRED",
             "message": "I incorporated your last answer and I need one more detail before moving forward.",
             "session_id": session_id,
+            "request_id": request_id,
             "question_result": None,
             "ba_result": ba_payload,
         }
@@ -388,7 +514,7 @@ def continue_requirement_flow(session_id: str, user_input: str) -> Dict:
         delivery_artifacts=delivery_artifacts,
     )
 
-    session["stage"] = "REVIEW_READY"
+    session["stage"] = "review_ready"
     session["requirement_document"] = requirement_document
     session["delivery_artifacts"] = delivery_artifacts
     session["execution_package"] = None
@@ -398,11 +524,21 @@ def continue_requirement_flow(session_id: str, user_input: str) -> Dict:
     session["latest_ba_result"] = ba_payload
     session_store.set(session_id, session)
 
+    # Promote title to epic name now that artifacts exist
+    _promote_title_from_epic(request_id, delivery_artifacts)
+
+    session_store.update_request_metadata(
+        request_id,
+        status="review_ready",
+        last_updated=_now_iso(),
+    )
+
     return {
         "mode": "REQUIREMENT",
         "status": "REVIEW_READY",
         "message": "I now have enough information to generate the requirement package for review.",
         "session_id": session_id,
+        "request_id": request_id,
         "question_result": None,
         "ba_result": ba_payload,
     }
@@ -413,8 +549,10 @@ def approve_requirement_flow(session_id: str) -> Dict:
     if not session:
         raise ValueError(f"Session not found: {session_id}")
 
-    if session.get("stage") != "REVIEW_READY":
+    if session.get("stage") != "review_ready":
         raise ValueError("Artifacts are not in a review-ready state.")
+
+    request_id = session.get("request_id", "")
 
     ba_payload = build_ba_payload(
         stage="execution_ready",
@@ -427,16 +565,23 @@ def approve_requirement_flow(session_id: str) -> Dict:
         jira_submission_result=session.get("jira_submission_result"),
     )
 
-    session["stage"] = "EXECUTION_READY"
+    session["stage"] = "execution_ready"
     session["approval_status"] = "APPROVED"
     session["latest_ba_result"] = ba_payload
     session_store.set(session_id, session)
+
+    session_store.update_request_metadata(
+        request_id,
+        status="execution_ready",
+        last_updated=_now_iso(),
+    )
 
     return {
         "mode": "REQUIREMENT",
         "status": "EXECUTION_READY",
         "message": "Artifacts approved. The requirement package is now execution-ready.",
         "session_id": session_id,
+        "request_id": request_id,
         "question_result": None,
         "ba_result": ba_payload,
     }
@@ -446,6 +591,8 @@ def revise_requirement_flow(session_id: str) -> Dict:
     session = get_session(session_id)
     if not session:
         raise ValueError(f"Session not found: {session_id}")
+
+    request_id = session.get("request_id", "")
 
     ba_payload = build_ba_payload(
         stage="clarification",
@@ -463,11 +610,18 @@ def revise_requirement_flow(session_id: str) -> Dict:
     session["latest_ba_result"] = ba_payload
     session_store.set(session_id, session)
 
+    session_store.update_request_metadata(
+        request_id,
+        status="clarification",
+        last_updated=_now_iso(),
+    )
+
     return {
         "mode": "REQUIREMENT",
         "status": "REVISION_REQUIRED",
         "message": "Revision requested. Tell me what should change, and I'll reopen the affected parts of the requirement.",
         "session_id": session_id,
+        "request_id": request_id,
         "question_result": None,
         "ba_result": ba_payload,
     }
@@ -478,9 +632,10 @@ def generate_jira_payload_flow(session_id: str) -> Dict:
     if not session:
         raise ValueError(f"Session not found: {session_id}")
 
-    if session.get("stage") != "EXECUTION_READY":
+    if session.get("stage") != "execution_ready":
         raise ValueError("Artifacts must be approved before generating Jira payload.")
 
+    request_id = session.get("request_id", "")
     requirement_document = session.get("requirement_document")
     delivery_artifacts = session.get("delivery_artifacts")
     if not requirement_document or not delivery_artifacts:
@@ -502,15 +657,22 @@ def generate_jira_payload_flow(session_id: str) -> Dict:
 
     session["execution_package"] = execution_package
     session["jira_payload"] = jira_payload
-    session["stage"] = "JIRA_PAYLOAD_READY"
+    session["stage"] = "jira_payload_ready"
     session["latest_ba_result"] = ba_payload
     session_store.set(session_id, session)
+
+    session_store.update_request_metadata(
+        request_id,
+        status="jira_payload_ready",
+        last_updated=_now_iso(),
+    )
 
     return {
         "mode": "EXECUTION",
         "status": "JIRA_PAYLOAD_READY",
         "message": "Jira payload generated successfully. Review it before sending.",
         "session_id": session_id,
+        "request_id": request_id,
         "question_result": None,
         "ba_result": ba_payload,
     }
@@ -521,6 +683,7 @@ def send_to_jira_flow(session_id: str) -> Dict:
     if not session:
         raise ValueError(f"Session not found: {session_id}")
 
+    request_id = session.get("request_id", "")
     jira_payload = session.get("jira_payload")
     if not jira_payload:
         raise ValueError("Generate Jira payload before sending to Jira.")
@@ -539,15 +702,44 @@ def send_to_jira_flow(session_id: str) -> Dict:
     )
 
     session["jira_submission_result"] = submission_result
-    session["stage"] = "JIRA_SUBMITTED"
+    session["stage"] = "jira_submitted"
     session["latest_ba_result"] = ba_payload
     session_store.set(session_id, session)
+
+    session_store.update_request_metadata(
+        request_id,
+        status="jira_submitted",
+        last_updated=_now_iso(),
+    )
 
     return {
         "mode": "EXECUTION",
         "status": "JIRA_SUBMITTED",
         "message": "Jira issues created successfully.",
         "session_id": session_id,
+        "request_id": request_id,
         "question_result": None,
         "ba_result": ba_payload,
     }
+
+
+# ── Message persistence helpers ───────────────────────────────────────────────
+# Called from app.py after every assistant turn to keep the index in sync
+# with the rendered chat thread.
+
+def persist_messages_for_session(session_id: str, messages: List[Dict]) -> None:
+    """
+    Sync the rendered messages list to the request record in the index.
+    Looks up request_id from session_id via a reverse index scan.
+
+    Call this from app.py after appending each assistant message:
+      ba_service.persist_messages_for_session(
+          st.session_state.ba_session_id,
+          st.session_state.messages,
+      )
+    """
+    record = session_store.get_request_by_session_id(session_id)
+    if not record:
+        return
+
+    _sync_messages_to_index(record["request_id"], messages)
