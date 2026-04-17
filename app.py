@@ -522,55 +522,130 @@ def render_question_result(
     return answer
 
 
+def render_context_summary_in_chat(context_summary: dict) -> None:
+    name          = context_summary.get("name", "Uploaded file")
+    summary       = context_summary.get("summary", "")
+    topics        = context_summary.get("topics", [])
+    business_area = context_summary.get("business_area", "")
+    signals       = context_summary.get("signals", [])
+    potential_use = context_summary.get("potential_use", "")
+
+    st.markdown(f"**Context Highlights — {name}**")
+    st.markdown("---")
+    if summary:
+        st.markdown("**Summary**")
+        st.markdown(summary)
+    if topics:
+        st.markdown("**Key Topics**")
+        for t in topics:
+            st.markdown(f"- {t}")
+    if business_area:
+        st.markdown(f"**Business Area:** {business_area}")
+    if signals:
+        st.markdown("**Signals Detected**")
+        for s in signals:
+            st.markdown(f"- {s}")
+    if potential_use:
+        st.markdown("**Potential Use**")
+        st.markdown(potential_use)
+    st.markdown("---")
+
+
 def render_requirement_document(requirement_document: dict) -> None:
-    st.markdown("### Structured Requirement Document")
-    st.write(f"**Problem Statement:** {requirement_document.get('problem_statement', '')}")
-    st.write(f"**Business Objective:** {requirement_document.get('business_objective', '')}")
-    st.write(f"**Scope:** {requirement_document.get('scope', '')}")
-    st.write(f"**Stakeholders:** {requirement_document.get('stakeholders', '')}")
-    st.write(f"**Data Requirements:** {requirement_document.get('data_requirements', '')}")
-    st.write(f"**Frequency:** {requirement_document.get('frequency', '')}")
-    st.write(f"**Success Criteria:** {requirement_document.get('success_criteria', '')}")
-
-    st.markdown("### Assumptions")
-    for item in requirement_document.get("assumptions", []):
-        st.write(f"- {item}")
-
-    st.markdown("### Constraints")
-    for item in requirement_document.get("constraints", []):
-        st.write(f"- {item}")
-
-    st.markdown("### Risks")
-    for item in requirement_document.get("risks", []):
-        st.write(f"- {item}")
+    pass  # replaced by render_final_summary
 
 
 def render_delivery_artifacts(delivery_artifacts: dict) -> None:
-    epic = delivery_artifacts.get("epic", {})
-    stories = delivery_artifacts.get("stories", [])
+    pass  # replaced by render_final_summary
 
-    st.markdown("### Epic")
-    st.write(f"**Title:** {epic.get('title', '')}")
-    st.write(f"**Description:** {epic.get('description', '')}")
-    st.write(f"**Business Value:** {epic.get('business_value', '')}")
-    st.write(f"**Success Metrics:** {epic.get('success_metrics', '')}")
 
-    st.markdown("### User Stories")
-    for idx, story in enumerate(stories, start=1):
-        with st.expander(f"Story {idx}: {story.get('title', '')}"):
-            st.write(f"**Description:** {story.get('description', '')}")
+def render_final_summary(requirement_document: dict, delivery_artifacts: dict) -> None:
+    epic    = delivery_artifacts.get("epic", {}) if delivery_artifacts else {}
+    stories = delivery_artifacts.get("stories", []) if delivery_artifacts else []
 
-            st.write("**Acceptance Criteria:**")
-            for item in story.get("acceptance_criteria", []):
-                st.write(f"- {item}")
+    epic_title    = epic.get("title", "")
+    display_title = epic_title.replace("AI | Req | ", "").strip() if epic_title else ""
 
-            st.write("**Dependencies:**")
-            for item in story.get("dependencies", []):
-                st.write(f"- {item}")
+    st.markdown("## Requirement Summary")
+    st.markdown("*Review the requirement below. This matches what will be sent to Jira.*")
+    st.markdown("---")
 
-            st.write("**Risks:**")
-            for item in story.get("risks", []):
-                st.write(f"- {item}")
+    if display_title:
+        st.markdown("### 🏷️ Epic Name")
+        st.markdown(f"**{display_title}**")
+
+    problem = requirement_document.get("problem_statement", "")
+    if problem:
+        st.markdown("### 📋 Request Summary")
+        st.markdown(problem)
+
+    objective = requirement_document.get("business_objective", "")
+    if objective and objective != "Needs clarification":
+        st.markdown("### 🎯 Objective")
+        st.markdown(objective)
+
+    scope = requirement_document.get("scope", "")
+    if scope and scope != "Needs clarification":
+        st.markdown("### 🔲 Scope")
+        st.markdown(scope)
+
+    stakeholders = requirement_document.get("stakeholders", "")
+    if stakeholders and stakeholders != "Needs clarification":
+        st.markdown("### 👥 Stakeholders")
+        st.markdown(stakeholders)
+
+    data_req = requirement_document.get("data_requirements", "")
+    if data_req and data_req != "Needs clarification":
+        st.markdown("### 🗄️ Data & Systems")
+        st.markdown(data_req)
+
+    frequency = requirement_document.get("frequency", "")
+    if frequency and frequency != "Needs clarification":
+        st.markdown("### 🔄 Frequency")
+        st.markdown(frequency)
+
+    success = requirement_document.get("success_criteria", "")
+    if success and success != "Needs clarification":
+        st.markdown("### ✅ Success Criteria")
+        st.markdown(success)
+
+    if stories:
+        st.markdown("### 📝 Key Requirements")
+        for idx, story in enumerate(stories, start=1):
+            with st.expander(f"Story {idx}: {story.get('title', '')}"):
+                st.markdown(f"**Description:** {story.get('description', '')}")
+                ac = story.get("acceptance_criteria", [])
+                if ac:
+                    st.markdown("**Acceptance Criteria:**")
+                    for item in ac:
+                        st.markdown(f"- {item}")
+                deps = story.get("dependencies", [])
+                if deps:
+                    st.markdown("**Dependencies:**")
+                    for item in deps:
+                        st.markdown(f"- {item}")
+                risks = story.get("risks", [])
+                if risks:
+                    st.markdown("**Risks:**")
+                    for item in risks:
+                        st.markdown(f"- {item}")
+
+    constraints = requirement_document.get("constraints", [])
+    assumptions = requirement_document.get("assumptions", [])
+    if constraints or assumptions:
+        st.markdown("### ⚠️ Constraints & Assumptions")
+        for item in constraints:
+            st.markdown(f"- {item}")
+        for item in assumptions:
+            st.markdown(f"- {item}")
+
+    risks = requirement_document.get("risks", [])
+    if risks:
+        st.markdown("### 🔴 Risks")
+        for item in risks:
+            st.markdown(f"- {item}")
+
+    st.markdown("---")
 
 
 def render_execution_package(execution_package: dict) -> None:
@@ -733,10 +808,7 @@ def render_non_clarification_ba_result(
         st.write(f"**Approval Status:** {approval_status}")
 
         if requirement_document:
-            render_requirement_document(requirement_document)
-
-        if delivery_artifacts:
-            render_delivery_artifacts(delivery_artifacts)
+            render_final_summary(requirement_document, delivery_artifacts)
 
         if execution_package:
             render_execution_package(execution_package)
@@ -801,23 +873,18 @@ def should_prompt_for_context(status: str) -> bool:
 def handle_context_gate_response(user_input: str) -> tuple[bool, str | None]:
     normalized = (user_input or "").strip().lower()
 
-    if st.session_state.get("awaiting_context_offer"):
-        if normalized in {"yes", "y"}:
-            st.session_state.awaiting_context_offer = False
-            st.session_state.awaiting_context_complete = True
-            return True, build_upload_complete_prompt()
-        if normalized in {"no", "n"}:
-            st.session_state.awaiting_context_offer = False
+    if st.session_state.get("awaiting_context_confirmation"):
+        if normalized in {"yes", "y", "confirm", "continue", "ok", "proceed"}:
+            st.session_state.awaiting_context_confirmation = False
+            st.session_state.context_summary_pending = None
             st.session_state.context_gate_completed = True
-            return True, "Understood. I will continue without additional business context."
-        return True, "Please reply yes to upload business context or no to continue without it."
-
-    if st.session_state.get("awaiting_context_complete"):
-        if normalized == "complete":
-            st.session_state.awaiting_context_complete = False
+            return True, "Context confirmed. Proceeding to review."
+        if normalized in {"no", "n", "skip"}:
+            st.session_state.awaiting_context_confirmation = False
+            st.session_state.context_summary_pending = None
             st.session_state.context_gate_completed = True
-            return True, "Context noted. I will move to the next step."
-        return True, "Once your file upload is finished, type complete so I can continue."
+            return True, "Understood. Continuing without this context."
+        return True, "Reply **yes** to confirm this context or **no** to skip."
 
     return False, None
 
@@ -890,6 +957,12 @@ if "awaiting_context_complete" not in st.session_state:
 
 if "context_gate_completed" not in st.session_state:
     st.session_state.context_gate_completed = False
+
+if "context_summary_pending" not in st.session_state:
+    st.session_state.context_summary_pending = None
+
+if "awaiting_context_confirmation" not in st.session_state:
+    st.session_state.awaiting_context_confirmation = False
 
 render_top_logo()
 
@@ -975,6 +1048,8 @@ with st.sidebar:
         st.session_state.awaiting_context_offer = False
         st.session_state.awaiting_context_complete = False
         st.session_state.context_gate_completed = False
+        st.session_state.context_summary_pending = None
+        st.session_state.awaiting_context_confirmation = False
         st.success("Session reset.")
 
     st.markdown("</div>", unsafe_allow_html=True)
@@ -990,34 +1065,107 @@ if not st.session_state.messages:
         unsafe_allow_html=True,
     )
 
+if st.session_state.get("awaiting_context_confirmation") and st.session_state.get("context_summary_pending"):
+    with st.chat_message("assistant"):
+        render_context_summary_in_chat(st.session_state.context_summary_pending)
+
 for message in st.session_state.messages:
     with st.chat_message(message["role"]):
         st.markdown(message["content"])
 
 latest_status = get_latest_status()
 
+# ── Upload gate — shown at REVIEW_READY before the Approve/Revise step ──
+# Positioned in the main screen (not the sidebar) so the user decides here
+# whether to upload business context before reviewing, or skip it.
+if (
+    st.session_state.ba_session_id
+    and latest_status in {"REVIEW_READY", "DELIVERY_ARTIFACTS_READY"}
+    and not st.session_state.context_gate_completed
+    and not st.session_state.awaiting_context_confirmation
+):
+    st.markdown("## Upload Business Context")
+    st.markdown(
+        "Optionally upload a .pdf or .txt file with business context "
+        "to ground the requirement shaping, or click Next Step to proceed."
+    )
+
+    uploaded_file_inline = st.file_uploader(
+        "Upload a .pdf or .txt file",
+        type=["pdf", "txt"],
+        accept_multiple_files=False,
+        label_visibility="collapsed",
+        key="inline_upload",
+    )
+
+    col_upload, col_skip = st.columns(2)
+
+    with col_upload:
+        upload_clicked = st.button(
+            "Upload & Summarise",
+            icon=":material/upload_file:",
+            use_container_width=True,
+            disabled=uploaded_file_inline is None,
+            key="inline_upload_btn",
+        )
+
+    with col_skip:
+        skip_clicked = st.button(
+            "Next Step",
+            icon=":material/arrow_forward:",
+            use_container_width=True,
+            key="inline_skip_btn",
+        )
+
+    if upload_clicked and uploaded_file_inline is not None:
+        with st.spinner("Uploading and analysing context..."):
+            ingest_result = call_ingest_api(uploaded_file_inline)
+        if "error" in ingest_result:
+            st.error(ingest_result["error"])
+        else:
+            context_summary = ingest_result.get("context_summary")
+            if context_summary:
+                st.session_state.context_summary_pending = context_summary
+                st.session_state.awaiting_context_confirmation = True
+                st.session_state.context_gate_completed = False
+            else:
+                st.session_state.context_gate_completed = True
+            st.rerun()
+
+    if skip_clicked:
+        st.session_state.context_gate_completed = True
+        st.session_state.context_summary_pending = None
+        st.session_state.awaiting_context_confirmation = False
+        st.rerun()
+
+# ── Review Actions — shown after context gate resolved ──
 if (
     st.session_state.ba_session_id
     and latest_status in {"REVIEW_READY", "DELIVERY_ARTIFACTS_READY"}
     and st.session_state.context_gate_completed
-    and not st.session_state.awaiting_context_offer
-    and not st.session_state.awaiting_context_complete
 ):
     st.markdown("## Review Actions")
     col1, col2 = st.columns(2)
 
     with col1:
         if st.button("Approve"):
-            handle_action(action="APPROVE", top_k=4)
+            # One-click: approve AND generate Jira payload in the background
+            with st.spinner("Approving and generating Jira payload..."):
+                handle_action(action="APPROVE", top_k=4)
+                handle_action(action="GENERATE_JIRA", top_k=4)
 
     with col2:
         if st.button("Revise"):
             handle_action(action="REVISE", top_k=4)
 
 if st.session_state.ba_session_id and latest_status == "EXECUTION_READY":
-    st.markdown("## Execution")
-    if st.button("Generate Jira Payload"):
-        handle_action(action="GENERATE_JIRA", top_k=4)
+    # Jira payload is generated automatically on Approve — fallback only
+    if not st.session_state.latest_ba_result or not (
+        st.session_state.latest_ba_result.get("ba_result") or {}
+    ).get("jira_payload"):
+        st.markdown("## Execution")
+        if st.button("Generate Jira Payload"):
+            handle_action(action="GENERATE_JIRA", top_k=4)
 
 if st.session_state.ba_session_id and latest_status == "JIRA_PAYLOAD_READY":
     st.markdown("## Jira Submission")
@@ -1082,16 +1230,24 @@ if user_input:
                 question_result = result.get("question_result")
                 ba_result = result.get("ba_result")
 
-                if returned_session_id:
+                # Only persist a session ID for REQUIREMENT / EXECUTION flows.
+                # When mode is QUESTION — including after an ambiguity clarification
+                # resolves to "understand the topic" — the returned session_id belongs
+                # to the now-consumed pending intent and must not be kept. If kept, the
+                # next unrelated message gets routed through continue_requirement_flow
+                # with a stale session, causing the previous question's context to bleed
+                # into the next turn (carry-over bug).
+                if returned_session_id and mode in {"REQUIREMENT", "EXECUTION"}:
                     st.session_state.ba_session_id = returned_session_id
+                elif mode == "QUESTION":
+                    # Clear any stale pending-intent session so next input starts fresh
+                    st.session_state.ba_session_id = None
 
                 if mode in {"REQUIREMENT", "EXECUTION"}:
                     st.session_state.latest_ba_result = result
 
-                    if should_prompt_for_context(status) and not st.session_state.context_gate_completed:
-                        st.session_state.awaiting_context_offer = True
-                        st.session_state.awaiting_context_complete = False
-                        assistant_text = build_upload_context_prompt()
+                    if False:  # context offer now handled by in-screen upload gate
+                        pass
                     else:
                         if status in {
                             "REVIEW_READY",
@@ -1136,8 +1292,7 @@ if user_input:
                             stream=True,
                         )
 
-                if mode in {"REQUIREMENT", "EXECUTION"} and st.session_state.awaiting_context_offer:
-                    stream_text_line(assistant_text)
+
 
     st.session_state.messages.append(
         {
