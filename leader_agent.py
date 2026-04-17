@@ -52,6 +52,46 @@ CONTEXT_SIGNALS = (
     "policy state", "policy cover", "does the policy",
     "what does the policy", "retention policy", "access policy",
     "quality policy", "data policy", "governance policy",
+    # Time-based and record-specific policy questions — must route to
+    # CONTEXT retrieval to hit the corpus rather than falling through to
+    # classify_intent where borderline scores trigger the fallback.
+    "how long should",
+    "how long can",
+    "how long must",
+    "how long do",
+    "how often should",
+    "how often must",
+    "should records",
+    "records be kept",
+    "records be retained",
+    "records be deleted",
+    "retained records",
+    "archived records",
+    "can be deleted",
+    "must be retained",
+    "must be kept",
+    "temporary access",
+    "sensitive data",
+    "sensitive customer",
+    "data quality",
+    "quality issue",
+    "data defect",
+    "data steward",
+    # SLA and incident questions contain policy-specific terms that
+    # must route to CONTEXT retrieval — "what is the SLA" starts with
+    # "what is" which hits CONCEPT_PREFIXES, but CONTEXT wins first.
+    "the sla",
+    "sla for",
+    "p1 incident",
+    "p1 data",
+    "data incident",
+    "incident sla",
+    "escalation path",
+    "escalation policy",
+    "who should receive",
+    "who receives",
+    "critical defect",
+    "critical data",
 )
 
 STAKEHOLDER_SUBJECTS = (
